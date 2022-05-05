@@ -103,6 +103,40 @@ UsdPhysicsCollisionGroup::_GetTfType() const
     return _GetStaticTfType();
 }
 
+UsdAttribute
+UsdPhysicsCollisionGroup::GetMergeGroupNameAttr() const
+{
+    return GetPrim().GetAttribute(UsdPhysicsTokens->physicsMergeGroup);
+}
+
+UsdAttribute
+UsdPhysicsCollisionGroup::CreateMergeGroupNameAttr(VtValue const &defaultValue, bool writeSparsely) const
+{
+    return UsdSchemaBase::_CreateAttr(UsdPhysicsTokens->physicsMergeGroup,
+                       SdfValueTypeNames->String,
+                       /* custom = */ false,
+                       SdfVariabilityVarying,
+                       defaultValue,
+                       writeSparsely);
+}
+
+UsdAttribute
+UsdPhysicsCollisionGroup::GetInvertFilteringAttr() const
+{
+    return GetPrim().GetAttribute(UsdPhysicsTokens->physicsInvertFilter);
+}
+
+UsdAttribute
+UsdPhysicsCollisionGroup::CreateInvertFilteringAttr(VtValue const &defaultValue, bool writeSparsely) const
+{
+    return UsdSchemaBase::_CreateAttr(UsdPhysicsTokens->physicsInvertFilter,
+                       SdfValueTypeNames->Bool,
+                       /* custom = */ false,
+                       SdfVariabilityVarying,
+                       defaultValue,
+                       writeSparsely);
+}
+
 UsdRelationship
 UsdPhysicsCollisionGroup::GetFilteredGroupsRel() const
 {
@@ -116,13 +150,30 @@ UsdPhysicsCollisionGroup::CreateFilteredGroupsRel() const
                        /* custom = */ false);
 }
 
+namespace {
+static inline TfTokenVector
+_ConcatenateAttributeNames(const TfTokenVector& left,const TfTokenVector& right)
+{
+    TfTokenVector result;
+    result.reserve(left.size() + right.size());
+    result.insert(result.end(), left.begin(), left.end());
+    result.insert(result.end(), right.begin(), right.end());
+    return result;
+}
+}
+
 /*static*/
 const TfTokenVector&
 UsdPhysicsCollisionGroup::GetSchemaAttributeNames(bool includeInherited)
 {
-    static TfTokenVector localNames;
+    static TfTokenVector localNames = {
+        UsdPhysicsTokens->physicsMergeGroup,
+        UsdPhysicsTokens->physicsInvertFilter,
+    };
     static TfTokenVector allNames =
-        UsdTyped::GetSchemaAttributeNames(true);
+        _ConcatenateAttributeNames(
+            UsdTyped::GetSchemaAttributeNames(true),
+            localNames);
 
     if (includeInherited)
         return allNames;

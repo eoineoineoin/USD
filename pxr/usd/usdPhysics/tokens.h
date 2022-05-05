@@ -206,6 +206,10 @@ struct UsdPhysicsTokensType {
     /// 
     /// UsdPhysicsLimitAPI
     const TfToken physicsHigh;
+    /// \brief "physics:invertFilter"
+    /// 
+    /// UsdPhysicsCollisionGroup
+    const TfToken physicsInvertFilter;
     /// \brief "physics:jointEnabled"
     /// 
     /// UsdPhysicsJoint
@@ -250,6 +254,10 @@ struct UsdPhysicsTokensType {
     /// 
     /// UsdPhysicsDriveAPI
     const TfToken physicsMaxForce;
+    /// \brief "physics:mergeGroup"
+    /// 
+    /// UsdPhysicsCollisionGroup
+    const TfToken physicsMergeGroup;
     /// \brief "physics:minDistance"
     /// 
     /// UsdPhysicsDistanceJoint

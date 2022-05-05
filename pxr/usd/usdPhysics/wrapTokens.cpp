@@ -100,6 +100,7 @@ void wrapUsdPhysicsTokens()
     _AddToken(cls, "physicsGravityDirection", UsdPhysicsTokens->physicsGravityDirection);
     _AddToken(cls, "physicsGravityMagnitude", UsdPhysicsTokens->physicsGravityMagnitude);
     _AddToken(cls, "physicsHigh", UsdPhysicsTokens->physicsHigh);
+    _AddToken(cls, "physicsInvertFilter", UsdPhysicsTokens->physicsInvertFilter);
     _AddToken(cls, "physicsJointEnabled", UsdPhysicsTokens->physicsJointEnabled);
     _AddToken(cls, "physicsKinematicEnabled", UsdPhysicsTokens->physicsKinematicEnabled);
     _AddToken(cls, "physicsLocalPos0", UsdPhysicsTokens->physicsLocalPos0);
@@ -111,6 +112,7 @@ void wrapUsdPhysicsTokens()
     _AddToken(cls, "physicsMass", UsdPhysicsTokens->physicsMass);
     _AddToken(cls, "physicsMaxDistance", UsdPhysicsTokens->physicsMaxDistance);
     _AddToken(cls, "physicsMaxForce", UsdPhysicsTokens->physicsMaxForce);
+    _AddToken(cls, "physicsMergeGroup", UsdPhysicsTokens->physicsMergeGroup);
     _AddToken(cls, "physicsMinDistance", UsdPhysicsTokens->physicsMinDistance);
     _AddToken(cls, "physicsPrincipalAxes", UsdPhysicsTokens->physicsPrincipalAxes);
     _AddToken(cls, "physicsRestitution", UsdPhysicsTokens->physicsRestitution);

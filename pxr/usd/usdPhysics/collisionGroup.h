@@ -159,6 +159,55 @@ private:
 
 public:
     // --------------------------------------------------------------------- //
+    // MERGEGROUPNAME 
+    // --------------------------------------------------------------------- //
+    /// If non-empty, any collision groups in a stage with a matching
+    /// mergeGroup should be considered to refer to the same collection. Matching
+    /// collision groups should behave as if there were a single group containing
+    /// referenced colliders and filter groups from both collections.
+    ///
+    /// | ||
+    /// | -- | -- |
+    /// | Declaration | `string physics:mergeGroup` |
+    /// | C++ Type | std::string |
+    /// | \ref Usd_Datatypes "Usd Type" | SdfValueTypeNames->String |
+    USDPHYSICS_API
+    UsdAttribute GetMergeGroupNameAttr() const;
+
+    /// See GetMergeGroupNameAttr(), and also 
+    /// \ref Usd_Create_Or_Get_Property for when to use Get vs Create.
+    /// If specified, author \p defaultValue as the attribute's default,
+    /// sparsely (when it makes sense to do so) if \p writeSparsely is \c true -
+    /// the default for \p writeSparsely is \c false.
+    USDPHYSICS_API
+    UsdAttribute CreateMergeGroupNameAttr(VtValue const &defaultValue = VtValue(), bool writeSparsely=false) const;
+
+public:
+    // --------------------------------------------------------------------- //
+    // INVERTFILTERING 
+    // --------------------------------------------------------------------- //
+    /// If set, this collision group will collide only with colliders
+    /// in the filteredGroups. If unset, this collision group will collide with
+    /// all other colliders except those listed in filteredGroups
+    ///
+    /// | ||
+    /// | -- | -- |
+    /// | Declaration | `bool physics:invertFilter` |
+    /// | C++ Type | bool |
+    /// | \ref Usd_Datatypes "Usd Type" | SdfValueTypeNames->Bool |
+    USDPHYSICS_API
+    UsdAttribute GetInvertFilteringAttr() const;
+
+    /// See GetInvertFilteringAttr(), and also 
+    /// \ref Usd_Create_Or_Get_Property for when to use Get vs Create.
+    /// If specified, author \p defaultValue as the attribute's default,
+    /// sparsely (when it makes sense to do so) if \p writeSparsely is \c true -
+    /// the default for \p writeSparsely is \c false.
+    USDPHYSICS_API
+    UsdAttribute CreateInvertFilteringAttr(VtValue const &defaultValue = VtValue(), bool writeSparsely=false) const;
+
+public:
+    // --------------------------------------------------------------------- //
     // FILTEREDGROUPS 
     // --------------------------------------------------------------------- //
     /// References a list of PhysicsCollisionGroups with which 
