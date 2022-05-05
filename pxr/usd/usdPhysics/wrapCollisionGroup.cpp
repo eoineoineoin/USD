@@ -48,6 +48,20 @@ namespace {
 // fwd decl.
 WRAP_CUSTOM;
 
+        
+static UsdAttribute
+_CreateMergeGroupNameAttr(UsdPhysicsCollisionGroup &self,
+                                      object defaultVal, bool writeSparsely) {
+    return self.CreateMergeGroupNameAttr(
+        UsdPythonToSdfType(defaultVal, SdfValueTypeNames->String), writeSparsely);
+}
+        
+static UsdAttribute
+_CreateInvertFilteringAttr(UsdPhysicsCollisionGroup &self,
+                                      object defaultVal, bool writeSparsely) {
+    return self.CreateInvertFilteringAttr(
+        UsdPythonToSdfType(defaultVal, SdfValueTypeNames->Bool), writeSparsely);
+}
 
 static std::string
 _Repr(const UsdPhysicsCollisionGroup &self)
@@ -90,6 +104,20 @@ void wrapUsdPhysicsCollisionGroup()
 
         .def(!self)
 
+        
+        .def("GetMergeGroupNameAttr",
+             &This::GetMergeGroupNameAttr)
+        .def("CreateMergeGroupNameAttr",
+             &_CreateMergeGroupNameAttr,
+             (arg("defaultValue")=object(),
+              arg("writeSparsely")=false))
+        
+        .def("GetInvertFilteringAttr",
+             &This::GetInvertFilteringAttr)
+        .def("CreateInvertFilteringAttr",
+             &_CreateInvertFilteringAttr,
+             (arg("defaultValue")=object(),
+              arg("writeSparsely")=false))
 
         
         .def("GetFilteredGroupsRel",

@@ -426,12 +426,36 @@ occurs often. One might need the sword of a game character to pass through an
 enemy rather than to bounce off, while wanting it to bounce off walls, for 
 example.
 
-We define a CollisionGroup as an IsA schema with a UsdCollectionAPI applied, 
-that defines the membership of colliders (objects with a 
-UsdPhysicsCollisionAPI) in the group. Each group also has a multi-target 
-relationship to other groups (potentially including itself) with which it needs 
-to not collide. Colliders not in any CollisionGroup collide with all other 
-colliders in the scene.
+We define a CollisionGroup as an IsA schema with a UsdCollectionAPI applied,
+that defines the membership of colliders (objects with a UsdPhysicsCollisionAPI)
+in the group. Each group also has a multi-target relationship to other groups
+(potentially including itself) with which it needs to not collide. Colliders not
+in any CollisionGroup collide with all other colliders in the scene, except for
+those colliders which have disabled collision by default.
+
+In order to allow for a collider whose collision is disabled by default, a
+CollisionGroup has an invertFilter option; when this value is set, a collider
+in the CollisionGroup should be considered to collide with no other colliders,
+except those specified as members of the filtered groups.
+
+When composing a stage from multiple USD scenes, it may be desirable to merge
+CollisionGroups. For example, a stage composed of multiple characters, each with
+a ragdoll as well as a character "controller" - the character controllers should
+not collide with the ragdoll instances. A CollisionGroup contains an optional
+mergeGroupName, and all groups with matching name should be considered to be
+part of a single group, whose members and filter groups should be the union of
+the merged groups. This allows the character file to define a group which
+disables the controller-versus-ragdoll collisions; by assigning a mergeGroupName
+to this group, the controller can be filtered against ragdoll bodies in all
+other instances of the character.
+
+Care should be taken when merging groups with differing invertFilter options;
+typically, this merge will result in a group which collides with less objects.
+Consider an inverted group which references only GroupX (i.e. bodies in this
+group will not collide with anything except those in GroupX) which merges with a
+non-inverting group which references the same GroupX (i.e. collides with
+everything except GroupX) - the merged group will collide with nothing, since
+the combined rules of the merged groups will filter out any other body.
 
 \subsubsection usdPhysics_pairwise_filtering Pairwise Filtering
 
