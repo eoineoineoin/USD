@@ -1,0 +1,386 @@
+#usda 1.0
+(
+    customLayerData = {
+        dictionary cameraSettings = {
+            dictionary Front = {
+                double3 position = (0, 0, 50000)
+                double radius = 500
+            }
+            dictionary Perspective = {
+                double3 position = (3143.5541383540394, 648.728568261972, 135.52015119192532)
+                double3 target = (2333.790718919708, 470.6522906369213, -114.62389509585591)
+            }
+            dictionary Right = {
+                double3 position = (-50000, 0, -1.1102230246251565e-11)
+                double radius = 500
+            }
+            dictionary Top = {
+                double3 position = (-4.329780281177466e-12, 50000, 1.1102230246251565e-11)
+                double radius = 500
+            }
+            string boundCamera = "/OmniverseKit_Persp"
+        }
+        dictionary omni_layer = {
+            dictionary muteness = {
+            }
+        }
+        dictionary renderSettings = {
+        }
+    }
+    defaultPrim = "World"
+    endTimeCode = 100
+    metersPerUnit = 0.009999999776482582
+    startTimeCode = 0
+    timeCodesPerSecond = 24
+    upAxis = "Y"
+)
+
+def Xform "World"
+{
+    def DistantLight "defaultLight" (
+        prepend apiSchemas = ["ShapingAPI"]
+    )
+    {
+        float angle = 1
+        float intensity = 3000
+        float shaping:cone:angle = 180
+        float shaping:cone:softness
+        float shaping:focus
+        color3f shaping:focusTint
+        asset shaping:ies:file
+        double3 xformOp:rotateXYZ = (315, 0, 0)
+        double3 xformOp:scale = (1, 1, 1)
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+    }
+
+    def Cube "FixedA" (
+        delete apiSchemas = ["PhysicsRigidBodyAPI"]
+        prepend apiSchemas = ["PhysicsCollisionAPI"]
+    )
+    {
+        float3[] extent = [(-50, -50, -50), (50, 50, 50)]
+        bool physics:collisionEnabled = 1
+        double size = 100
+        double3 xformOp:rotateXYZ = (0, 0, 0)
+        double3 xformOp:scale = (1, 1, 1)
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+
+        def PhysicsFixedJoint "FixedJoint"
+        {
+            rel physics:body0 = </World/FixedA>
+            prepend rel physics:body1 = </World/FixedB>
+            float physics:breakForce = inf
+            float physics:breakTorque = inf
+            point3f physics:localPos0 = (50, -50, 50)
+            point3f physics:localPos1 = (-50, 50, -50)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+        }
+    }
+
+    def Cube "FixedB" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsCollisionAPI"]
+    )
+    {
+        float3[] extent = [(-50, -50, -50), (50, 50, 50)]
+        vector3f physics:angularVelocity = (0, 0, 0)
+        bool physics:collisionEnabled = 1
+        bool physics:kinematicEnabled = 0
+        bool physics:rigidBodyEnabled = 1
+        vector3f physics:velocity = (0, 0, 0)
+        double size = 100
+        quatf xformOp:orient = (1, 0, 0, 0)
+        double3 xformOp:scale = (1, 1, 1)
+        double3 xformOp:translate = (100, -100, 100)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+    }
+
+    def Cube "FixedA_01" (
+        delete apiSchemas = ["PhysicsRigidBodyAPI"]
+        prepend apiSchemas = ["PhysicsCollisionAPI"]
+    )
+    {
+        float3[] extent = [(-50, -50, -50), (50, 50, 50)]
+        bool physics:collisionEnabled = 1
+        double size = 100
+        double3 xformOp:rotateXYZ = (0, 0, 0)
+        double3 xformOp:scale = (0.5, 0.5, 0.5)
+        double3 xformOp:translate = (0, 0, -540.975)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+
+        def PhysicsFixedJoint "FixedJoint"
+        {
+            rel physics:body0 = </World/FixedA_01>
+            delete rel physics:body1 = </World/FixedB>
+            prepend rel physics:body1 = </World/FixedB_01>
+            float physics:breakForce = inf
+            float physics:breakTorque = inf
+            point3f physics:localPos0 = (50, -50, 50)
+            point3f physics:localPos1 = (-50, 50, -50)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+        }
+    }
+
+    def Cube "FixedB_01" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsCollisionAPI"]
+    )
+    {
+        float3[] extent = [(-50, -50, -50), (50, 50, 50)]
+        vector3f physics:angularVelocity = (0, 0, 0)
+        bool physics:collisionEnabled = 1
+        bool physics:kinematicEnabled = 0
+        bool physics:rigidBodyEnabled = 1
+        vector3f physics:velocity = (0, 0, 0)
+        double size = 100
+        quatf xformOp:orient = (1, 0, 0, 0)
+        double3 xformOp:scale = (1, 1, 1)
+        double3 xformOp:translate = (100, -100, -440.9750061035156)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+    }
+
+    def Cube "FixedA_02" (
+        delete apiSchemas = ["PhysicsRigidBodyAPI"]
+        prepend apiSchemas = ["PhysicsCollisionAPI"]
+    )
+    {
+        float3[] extent = [(-50, -50, -50), (50, 50, 50)]
+        bool physics:collisionEnabled = 1
+        double size = 100
+        double3 xformOp:rotateXYZ = (0, 0, 0)
+        double3 xformOp:scale = (0.5, 0.5, 0.5)
+        double3 xformOp:translate = (0, 0, -989.422)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+    }
+
+    def Cube "FixedB_02" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsCollisionAPI"]
+    )
+    {
+        float3[] extent = [(-50, -50, -50), (50, 50, 50)]
+        vector3f physics:angularVelocity = (0, 0, 0)
+        bool physics:collisionEnabled = 1
+        bool physics:kinematicEnabled = 0
+        bool physics:rigidBodyEnabled = 1
+        vector3f physics:velocity = (0, 0, 0)
+        double size = 100
+        quatf xformOp:orient = (1, 0, 0, 0)
+        double3 xformOp:scale = (1, 1, 1)
+        double3 xformOp:translate = (100, -100, -889.4219970703125)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def PhysicsFixedJoint "FixedJoint"
+        {
+            rel physics:body0 = </World/FixedA_02>
+            delete rel physics:body1 = [
+                </World/FixedB>,
+                </World/FixedB_01>,
+            ]
+            prepend rel physics:body1 = </World/FixedB_02>
+            float physics:breakForce = inf
+            float physics:breakTorque = inf
+            point3f physics:localPos0 = (50, -50, 50)
+            point3f physics:localPos1 = (-50, 50, -50)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+        }
+    }
+
+    def Cube "DistanceA" (
+        prepend apiSchemas = ["PhysicsCollisionAPI"]
+    )
+    {
+        float3[] extent = [(-50, -50, -50), (50, 50, 50)]
+        bool physics:collisionEnabled = 1
+        double size = 100
+        double3 xformOp:rotateXYZ = (0, 0, 0)
+        double3 xformOp:scale = (1, 1, 1)
+        double3 xformOp:translate = (0, 0, -1296.77)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+
+        def PhysicsDistanceJoint "DistanceJoint"
+        {
+            rel physics:body0 = </World/DistanceA>
+            prepend rel physics:body1 = </World/DistanceB>
+            float physics:breakForce = inf
+            float physics:breakTorque = inf
+            point3f physics:localPos0 = (0, -50, 0)
+            point3f physics:localPos1 = (0, 50, 0)
+            quatf physics:localRot0 = (0.9999619, 0, 0.008726535, 0)
+            quatf physics:localRot1 = (0.9999619, 0, 0.008726535, 0)
+            float physics:maxDistance = 100
+            float physics:minDistance = 0
+        }
+    }
+
+    def Cube "DistanceB" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsCollisionAPI"]
+    )
+    {
+        float3[] extent = [(-50, -50, -50), (50, 50, 50)]
+        vector3f physics:angularVelocity = (0, 0, 0)
+        bool physics:collisionEnabled = 1
+        bool physics:kinematicEnabled = 0
+        bool physics:rigidBodyEnabled = 1
+        vector3f physics:velocity = (0, 0, 0)
+        double size = 100
+        quatf xformOp:orient = (1, 0, 0, 0)
+        double3 xformOp:scale = (1, 1, 1)
+        double3 xformOp:translate = (0, -120.04299926757812, -1296.77001953125)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+    }
+
+    def Cube "DistanceA_01" (
+        prepend apiSchemas = ["PhysicsCollisionAPI"]
+    )
+    {
+        float3[] extent = [(-50, -50, -50), (50, 50, 50)]
+        bool physics:collisionEnabled = 1
+        double size = 100
+        double3 xformOp:rotateXYZ = (0, 0, 0)
+        double3 xformOp:scale = (0.5, 0.5, 0.5)
+        double3 xformOp:translate = (0, 0, -1515.19)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+
+        def PhysicsDistanceJoint "DistanceJoint"
+        {
+            rel physics:body0 = </World/DistanceA_01>
+            delete rel physics:body1 = </World/DistanceB>
+            prepend rel physics:body1 = </World/DistanceB_01>
+            float physics:breakForce = inf
+            float physics:breakTorque = inf
+            point3f physics:localPos0 = (0, -100, 0)
+            point3f physics:localPos1 = (0, 50, 0)
+            quatf physics:localRot0 = (0.9999619, 0, 0.008726535, 0)
+            quatf physics:localRot1 = (0.9999619, 0, 0.008726535, 0)
+            float physics:maxDistance = 100
+            float physics:minDistance = 0
+        }
+    }
+
+    def Cube "DistanceB_01" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsCollisionAPI"]
+    )
+    {
+        float3[] extent = [(-50, -50, -50), (50, 50, 50)]
+        vector3f physics:angularVelocity = (0, 0, 0)
+        bool physics:collisionEnabled = 1
+        bool physics:kinematicEnabled = 0
+        bool physics:rigidBodyEnabled = 1
+        vector3f physics:velocity = (0, 0, 0)
+        double size = 100
+        quatf xformOp:orient = (1, 0, 0, 0)
+        double3 xformOp:scale = (1, 1, 1)
+        double3 xformOp:translate = (0, -120.04299926757812, -1515.18994140625)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+    }
+
+    def Xform "PrismaticTestA"
+    {
+        double3 xformOp:rotateXYZ = (0, 0, 0)
+        double3 xformOp:scale = (1, 1, 1)
+        double3 xformOp:translate = (0, 0, -1953.04)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+
+        def Cube "Back" (
+            prepend apiSchemas = ["PhysicsCollisionAPI"]
+        )
+        {
+            float3[] extent = [(-50, -50, -50), (50, 50, 50)]
+            bool physics:collisionEnabled = 1
+            double size = 100
+            double3 xformOp:rotateXYZ = (0, 0, 0)
+            double3 xformOp:scale = (0.2, 7.2, 1)
+            double3 xformOp:translate = (0, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+
+            def PhysicsPrismaticJoint "PrismaticJoint"
+            {
+                uniform token physics:axis = "X"
+                rel physics:body0 = </World/PrismaticTestA/Back>
+                prepend rel physics:body1 = </World/PrismaticTestA/Front>
+                float physics:breakForce = inf
+                float physics:breakTorque = inf
+                point3f physics:localPos0 = (0, 0, -0.0000390625)
+                point3f physics:localPos1 = (-100, 0, -0.000078125)
+                quatf physics:localRot0 = (0.70710677, 0, 0, 0.70710677)
+                quatf physics:localRot1 = (0.70710677, 0, 0, 0.70710677)
+                float physics:lowerLimit = -360
+                float physics:upperLimit = 360
+            }
+        }
+
+        def Cube "Front" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsRigidBodyAPI"]
+        )
+        {
+            float3[] extent = [(-50, -50, -50), (50, 50, 50)]
+            vector3f physics:angularVelocity = (0, 0, 0)
+            bool physics:collisionEnabled = 1
+            bool physics:kinematicEnabled = 0
+            bool physics:rigidBodyEnabled = 1
+            vector3f physics:velocity = (0, 0, 0)
+            double size = 100
+            quatf xformOp:orient = (1, 0, 0, 0)
+            double3 xformOp:scale = (0.2, 1, 0.5)
+            double3 xformOp:translate = (20, 0, -0.00003906250003637979)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+        }
+    }
+
+    def Xform "ScaledPrismaticTest"
+    {
+        double3 xformOp:rotateXYZ = (0, 0, 0)
+        double3 xformOp:scale = (0.5, 0.5, 0.5)
+        double3 xformOp:translate = (0, 0, -2162.81)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+
+        def Cube "Back" (
+            prepend apiSchemas = ["PhysicsCollisionAPI"]
+        )
+        {
+            float3[] extent = [(-50, -50, -50), (50, 50, 50)]
+            bool physics:collisionEnabled = 1
+            double size = 100
+            double3 xformOp:rotateXYZ = (0, 0, 0)
+            double3 xformOp:scale = (0.2, 7.2, 1)
+            double3 xformOp:translate = (0, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+
+            def PhysicsPrismaticJoint "PrismaticJoint"
+            {
+                uniform token physics:axis = "X"
+                rel physics:body0 = </World/ScaledPrismaticTest/Back>
+                prepend rel physics:body1 = </World/ScaledPrismaticTest/Front>
+                float physics:breakForce = inf
+                float physics:breakTorque = inf
+                point3f physics:localPos0 = (0, 0, -0.0000390625)
+                point3f physics:localPos1 = (-100, 0, -0.000078125)
+                quatf physics:localRot0 = (0.70710677, 0, 0, 0.70710677)
+                quatf physics:localRot1 = (0.70710677, 0, 0, 0.70710677)
+                float physics:lowerLimit = -360
+                float physics:upperLimit = 360
+            }
+        }
+
+        def Cube "Front" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsRigidBodyAPI"]
+        )
+        {
+            float3[] extent = [(-50, -50, -50), (50, 50, 50)]
+            vector3f physics:angularVelocity = (0, 0, 0)
+            bool physics:collisionEnabled = 1
+            bool physics:kinematicEnabled = 0
+            bool physics:rigidBodyEnabled = 1
+            vector3f physics:velocity = (0, 0, 0)
+            double size = 100
+            quatf xformOp:orient = (1, 0, 0, 0)
+            double3 xformOp:scale = (0.2, 1, 0.5)
+            double3 xformOp:translate = (20, 0, -0.00011718750010913936)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+        }
+    }
+}
+

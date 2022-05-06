@@ -1,0 +1,228 @@
+#usda 1.0
+(
+    customLayerData = {
+        dictionary cameraSettings = {
+            dictionary Front = {
+                double3 position = (0, 0, 50000)
+                double radius = 500
+            }
+            dictionary Perspective = {
+                double3 position = (540.9220256142246, 601.9810714599573, 733.3284812090435)
+                double3 target = (11.795391753445188, 166.03381469798165, 204.20184734823863)
+            }
+            dictionary Right = {
+                double3 position = (-50000, 0, -1.1102230246251565e-11)
+                double radius = 500
+            }
+            dictionary Top = {
+                double3 position = (-4.329780281177466e-12, 50000, 1.1102230246251565e-11)
+                double radius = 500
+            }
+            string boundCamera = "/OmniverseKit_Persp"
+        }
+        dictionary omni_layer = {
+            dictionary muteness = {
+            }
+        }
+        int refinementOverrideImplVersion = 0
+        dictionary renderSettings = {
+        }
+    }
+    defaultPrim = "World"
+    endTimeCode = 100
+    metersPerUnit = 0.009999999776482582
+    startTimeCode = 0
+    timeCodesPerSecond = 24
+    upAxis = "Y"
+)
+
+def Xform "World"
+{
+    def DistantLight "defaultLight" (
+        prepend apiSchemas = ["ShapingAPI"]
+    )
+    {
+        float angle = 1
+        float intensity = 3000
+        float shaping:cone:angle = 180
+        float shaping:cone:softness
+        float shaping:focus
+        color3f shaping:focusTint
+        asset shaping:ies:file
+        double3 xformOp:rotateXYZ = (315, 0, 0)
+        double3 xformOp:scale = (1, 1, 1)
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+    }
+
+    def Cube "Ground" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI"]
+    )
+    {
+        float3[] extent = [(-50, -50, -50), (50, 50, 50)]
+        bool physics:collisionEnabled = 1
+        double size = 100
+        double3 xformOp:rotateXYZ = (0, 0, 0)
+        double3 xformOp:scale = (10, 0.2, 10)
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+    }
+
+    def Cube "Defaults" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsCollisionAPI"]
+    )
+    {
+        float3[] extent = [(-50, -50, -50), (50, 50, 50)]
+        vector3f physics:angularVelocity = (0, 0, 0)
+        bool physics:collisionEnabled = 1
+        bool physics:kinematicEnabled = 0
+        bool physics:rigidBodyEnabled = 1
+        vector3f physics:velocity = (0, 0, 0)
+        double size = 100
+        quatf xformOp:orient = (1, 0, 0, 0)
+        double3 xformOp:scale = (1, 1, 1)
+        double3 xformOp:translate = (-346.08099365234375, 69.74030303955078, 343.73199462890625)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+    }
+
+    def Cube "SpecifyDensity" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsCollisionAPI", "PhysicsMassAPI"]
+    )
+    {
+        float3[] extent = [(-50, -50, -50), (50, 50, 50)]
+        vector3f physics:angularVelocity = (0, 0, 0)
+        bool physics:collisionEnabled = 1
+        float physics:density = 10
+        bool physics:kinematicEnabled = 0
+        float physics:mass = 0 (
+            customData = {
+                dictionary omni = {
+                    dictionary kit = {
+                        dictionary property = {
+                            dictionary usd = {
+                                float2 soft_range_ui = (0, 0)
+                            }
+                        }
+                    }
+                }
+            }
+        )
+        bool physics:rigidBodyEnabled = 1
+        vector3f physics:velocity = (0, 0, 0)
+        double size = 100
+        quatf xformOp:orient = (1, 0, 0, 0)
+        double3 xformOp:scale = (1, 1, 1)
+        double3 xformOp:translate = (-346.08099365234375, 69.74030303955078, 169.1439971923828)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+    }
+
+    def Cube "SpecifyMass" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsCollisionAPI", "PhysicsMassAPI"]
+    )
+    {
+        float3[] extent = [(-50, -50, -50), (50, 50, 50)]
+        vector3f physics:angularVelocity = (0, 0, 0)
+        bool physics:collisionEnabled = 1
+        float physics:density = 0 (
+            customData = {
+                dictionary omni = {
+                    dictionary kit = {
+                        dictionary property = {
+                            dictionary usd = {
+                                float2 soft_range_ui = (0, 0)
+                            }
+                        }
+                    }
+                }
+            }
+        )
+        bool physics:kinematicEnabled = 0
+        float physics:mass = 3.1 (
+            customData = {
+                dictionary omni = {
+                    dictionary kit = {
+                        dictionary property = {
+                            dictionary usd = {
+                                float2 soft_range_ui = (0, 0)
+                            }
+                        }
+                    }
+                }
+            }
+        )
+        bool physics:rigidBodyEnabled = 1
+        vector3f physics:velocity = (0, 0, 0)
+        double size = 100
+        quatf xformOp:orient = (1, 0, 0, 0)
+        double3 xformOp:scale = (1, 1, 1)
+        double3 xformOp:translate = (-346.08099365234375, 69.74030303955078, -31.68720054626465)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+    }
+
+    def Capsule "SpecifyCOM" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsCollisionAPI", "PhysicsMassAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        float3[] extent = [(-30, -80, -30), (30, 80, 30)]
+        double height = 100
+        vector3f physics:angularVelocity = (0, 0, 0)
+        point3f physics:centerOfMass = (0, -65, 0)
+        bool physics:collisionEnabled = 1
+        bool physics:kinematicEnabled = 0
+        bool physics:rigidBodyEnabled = 1
+        vector3f physics:velocity = (0, 0, 0)
+        double radius = 30
+        custom bool refinementEnableOverride = 1
+        custom int refinementLevel = 2
+        quatf xformOp:orient = (0.9612706, -0.27560645, -3.958122e-9, -7.450582e-9)
+        double3 xformOp:scale = (1, 1, 1)
+        double3 xformOp:translate = (-371.0710144042969, 116.89600372314453, -268.6090087890625)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+    }
+
+    def Cube "SpecifyInertia" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsCollisionAPI", "PhysicsMassAPI"]
+    )
+    {
+        float3[] extent = [(-50, -50, -50), (50, 50, 50)]
+        vector3f physics:angularVelocity = (0, 0, 0)
+        bool physics:collisionEnabled = 1
+        float physics:density = 0 (
+            customData = {
+                dictionary omni = {
+                    dictionary kit = {
+                        dictionary property = {
+                            dictionary usd = {
+                                float2 soft_range_ui = (0, 0)
+                            }
+                        }
+                    }
+                }
+            }
+        )
+        float3 physics:diagonalInertia = (2500000, 2500000, 2500000)
+        bool physics:kinematicEnabled = 0
+        float physics:mass = 0 (
+            customData = {
+                dictionary omni = {
+                    dictionary kit = {
+                        dictionary property = {
+                            dictionary usd = {
+                                float2 soft_range_ui = (0, 0)
+                            }
+                        }
+                    }
+                }
+            }
+        )
+        bool physics:rigidBodyEnabled = 1
+        vector3f physics:velocity = (0, 0, 0)
+        double size = 100
+        quatf xformOp:orient = (1, 0, 0, 0)
+        double3 xformOp:scale = (1, 1, 1)
+        double3 xformOp:translate = (-167.091, 69.7403, -31.6872)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+    }
+}
+

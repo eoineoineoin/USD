@@ -1,0 +1,158 @@
+#usda 1.0
+(
+    customLayerData = {
+        dictionary cameraSettings = {
+            dictionary Front = {
+                double3 position = (0, 0, 50000)
+                double radius = 500
+            }
+            dictionary Perspective = {
+                double3 position = (1126.7523411272673, 179.8193477305331, 121.06760504284993)
+                double3 target = (-1092.8700818271134, 177.1764596270391, 111.77587124235377)
+            }
+            dictionary Right = {
+                double3 position = (-50000, 0, -1.1102230246251565e-11)
+                double radius = 500
+            }
+            dictionary Top = {
+                double3 position = (-4.329780281177466e-12, 50000, 1.1102230246251565e-11)
+                double radius = 500
+            }
+            string boundCamera = "/OmniverseKit_Persp"
+        }
+        dictionary omni_layer = {
+            dictionary muteness = {
+            }
+        }
+        dictionary renderSettings = {
+        }
+    }
+    defaultPrim = "World"
+    endTimeCode = 100
+    metersPerUnit = 0.009999999776482582
+    startTimeCode = 0
+    timeCodesPerSecond = 24
+    upAxis = "Y"
+)
+
+def Xform "World"
+{
+    def Cube "DistanceA" (
+        prepend apiSchemas = ["PhysicsCollisionAPI"]
+    )
+    {
+        float3[] extent = [(-50, -50, -50), (50, 50, 50)]
+        bool physics:collisionEnabled = 1
+        double size = 100
+        double3 xformOp:rotateXYZ = (0, 0, 0)
+        double3 xformOp:scale = (1, 1, 1)
+        double3 xformOp:translate = (218.42213439941406, 231.19232177734375, 193.46798706054688)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+
+        def PhysicsJoint "D6Joint" (
+            prepend apiSchemas = ["PhysicsLimitAPI:distance", "PhysxLimitAPI:distance"]
+        )
+        {
+            float limit:distance:physics:high = 100
+            float limit:distance:physics:low = 0
+            rel physics:body0 = </World/DistanceA>
+            prepend rel physics:body1 = </World/DistanceB>
+            float physics:breakForce = inf
+            float physics:breakTorque = inf
+            point3f physics:localPos0 = (0, -67.626686, 0)
+            point3f physics:localPos1 = (0.0005493164, 53.130737, 0.00024414062)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+        }
+    }
+
+    def Cube "DistanceB" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsCollisionAPI"]
+        customData = {
+            string physXPlacementModeMarkup = "convex_hull"
+        }
+    )
+    {
+        float3[] extent = [(-50, -50, -50), (50, 50, 50)]
+        vector3f physics:angularVelocity = (0, 0, 0)
+        bool physics:collisionEnabled = 1
+        bool physics:kinematicEnabled = 0
+        bool physics:rigidBodyEnabled = 1
+        vector3f physics:velocity = (0, 0, 0)
+        double size = 100
+        quatf xformOp:orient = (1, 0, 0, 0)
+        double3 xformOp:scale = (1, 1, 1)
+        double3 xformOp:translate = (218.4215850830078, 110.43490600585938, 193.46774291992188)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+    }
+
+    def DistantLight "defaultLight" (
+        prepend apiSchemas = ["ShapingAPI"]
+    )
+    {
+        float angle = 1
+        float intensity = 3000
+        float shaping:cone:angle = 180
+        float shaping:cone:softness
+        float shaping:focus
+        color3f shaping:focusTint
+        asset shaping:ies:file
+        double3 xformOp:rotateXYZ = (315, 0, 0)
+        double3 xformOp:scale = (1, 1, 1)
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+    }
+
+    def Cube "TranslationA" (
+        prepend apiSchemas = ["PhysicsCollisionAPI"]
+    )
+    {
+        float3[] extent = [(-50, -50, -50), (50, 50, 50)]
+        bool physics:collisionEnabled = 1
+        double size = 100
+        double3 xformOp:rotateXYZ = (0, 0, 0)
+        double3 xformOp:scale = (1, 1, 1)
+        double3 xformOp:translate = (218.422, 231.192, -72.5872)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+
+        def PhysicsJoint "D6Joint" (
+            delete apiSchemas = ["PhysicsLimitAPI:distance", "PhysxLimitAPI:distance"]
+            prepend apiSchemas = ["PhysicsLimitAPI:transY", "PhysxLimitAPI:transY"]
+        )
+        {
+            float limit:distance:physics:high = 1
+            float limit:transY:physics:high = 50
+            float limit:transY:physics:low = -100
+            rel physics:body0 = </World/TranslationB>
+            rel physics:body1 = </World/TranslationA>
+            float physics:breakForce = inf
+            float physics:breakTorque = inf
+            bool physics:jointEnabled = 1
+            point3f physics:localPos0 = (-0.0000029296875, 55, 0.0000036499023)
+            point3f physics:localPos1 = (0, -55, 0.00030517578)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+        }
+    }
+
+    def Cube "TranslationB" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsCollisionAPI"]
+        customData = {
+            string physXPlacementModeMarkup = "convex_hull"
+        }
+    )
+    {
+        float3[] extent = [(-50, -50, -50), (50, 50, 50)]
+        vector3f physics:angularVelocity = (0, 0, 0)
+        bool physics:collisionEnabled = 1
+        bool physics:kinematicEnabled = 0
+        bool physics:rigidBodyEnabled = 1
+        vector3f physics:velocity = (0, 0, 0)
+        double size = 100
+        quatf xformOp:orient = (1, 0, 0, 0)
+        double3 xformOp:scale = (1, 1, 1)
+        double3 xformOp:translate = (218.4219970703125, 110.43499755859375, -72.5875015258789)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+    }
+}
+
