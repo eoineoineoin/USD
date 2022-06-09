@@ -57,9 +57,9 @@ _CreateMergeGroupNameAttr(UsdPhysicsCollisionGroup &self,
 }
         
 static UsdAttribute
-_CreateInvertFilteringAttr(UsdPhysicsCollisionGroup &self,
+_CreateInvertFilteredGroupsAttr(UsdPhysicsCollisionGroup &self,
                                       object defaultVal, bool writeSparsely) {
-    return self.CreateInvertFilteringAttr(
+    return self.CreateInvertFilteredGroupsAttr(
         UsdPythonToSdfType(defaultVal, SdfValueTypeNames->Bool), writeSparsely);
 }
 
@@ -112,10 +112,10 @@ void wrapUsdPhysicsCollisionGroup()
              (arg("defaultValue")=object(),
               arg("writeSparsely")=false))
         
-        .def("GetInvertFilteringAttr",
-             &This::GetInvertFilteringAttr)
-        .def("CreateInvertFilteringAttr",
-             &_CreateInvertFilteringAttr,
+        .def("GetInvertFilteredGroupsAttr",
+             &This::GetInvertFilteredGroupsAttr)
+        .def("CreateInvertFilteredGroupsAttr",
+             &_CreateInvertFilteredGroupsAttr,
              (arg("defaultValue")=object(),
               arg("writeSparsely")=false))
 

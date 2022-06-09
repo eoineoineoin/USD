@@ -121,15 +121,15 @@ UsdPhysicsCollisionGroup::CreateMergeGroupNameAttr(VtValue const &defaultValue, 
 }
 
 UsdAttribute
-UsdPhysicsCollisionGroup::GetInvertFilteringAttr() const
+UsdPhysicsCollisionGroup::GetInvertFilteredGroupsAttr() const
 {
-    return GetPrim().GetAttribute(UsdPhysicsTokens->physicsInvertFilter);
+    return GetPrim().GetAttribute(UsdPhysicsTokens->physicsInvertFilteredGroups);
 }
 
 UsdAttribute
-UsdPhysicsCollisionGroup::CreateInvertFilteringAttr(VtValue const &defaultValue, bool writeSparsely) const
+UsdPhysicsCollisionGroup::CreateInvertFilteredGroupsAttr(VtValue const &defaultValue, bool writeSparsely) const
 {
-    return UsdSchemaBase::_CreateAttr(UsdPhysicsTokens->physicsInvertFilter,
+    return UsdSchemaBase::_CreateAttr(UsdPhysicsTokens->physicsInvertFilteredGroups,
                        SdfValueTypeNames->Bool,
                        /* custom = */ false,
                        SdfVariabilityVarying,
@@ -168,7 +168,7 @@ UsdPhysicsCollisionGroup::GetSchemaAttributeNames(bool includeInherited)
 {
     static TfTokenVector localNames = {
         UsdPhysicsTokens->physicsMergeGroup,
-        UsdPhysicsTokens->physicsInvertFilter,
+        UsdPhysicsTokens->physicsInvertFilteredGroups,
     };
     static TfTokenVector allNames =
         _ConcatenateAttributeNames(
