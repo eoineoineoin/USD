@@ -230,10 +230,10 @@ struct UsdPhysicsTokensType {
     /// 
     /// UsdPhysicsScene
     const TfToken physicsGravityMagnitude;
-    /// \brief "physics:invertFilter"
+    /// \brief "physics:invertFilteredGroups"
     /// 
     /// UsdPhysicsCollisionGroup
-    const TfToken physicsInvertFilter;
+    const TfToken physicsInvertFilteredGroups;
     /// \brief "physics:jointEnabled"
     /// 
     /// UsdPhysicsJoint

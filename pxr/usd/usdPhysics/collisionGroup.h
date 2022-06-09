@@ -184,27 +184,28 @@ public:
 
 public:
     // --------------------------------------------------------------------- //
-    // INVERTFILTERING 
+    // INVERTFILTEREDGROUPS 
     // --------------------------------------------------------------------- //
-    /// If set, this collision group will collide only with colliders
-    /// in the filteredGroups. If unset, this collision group will collide with
-    /// all other colliders except those listed in filteredGroups
+    /// Normally, the filter will disable collisions against the selected
+    /// filter groups. However, if this option is set, the filter will disable
+    /// collisions against all colliders except for those in the selected filter
+    /// groups.
     ///
     /// | ||
     /// | -- | -- |
-    /// | Declaration | `bool physics:invertFilter` |
+    /// | Declaration | `bool physics:invertFilteredGroups` |
     /// | C++ Type | bool |
     /// | \ref Usd_Datatypes "Usd Type" | SdfValueTypeNames->Bool |
     USDPHYSICS_API
-    UsdAttribute GetInvertFilteringAttr() const;
+    UsdAttribute GetInvertFilteredGroupsAttr() const;
 
-    /// See GetInvertFilteringAttr(), and also 
+    /// See GetInvertFilteredGroupsAttr(), and also 
     /// \ref Usd_Create_Or_Get_Property for when to use Get vs Create.
     /// If specified, author \p defaultValue as the attribute's default,
     /// sparsely (when it makes sense to do so) if \p writeSparsely is \c true -
     /// the default for \p writeSparsely is \c false.
     USDPHYSICS_API
-    UsdAttribute CreateInvertFilteringAttr(VtValue const &defaultValue = VtValue(), bool writeSparsely=false) const;
+    UsdAttribute CreateInvertFilteredGroupsAttr(VtValue const &defaultValue = VtValue(), bool writeSparsely=false) const;
 
 public:
     // --------------------------------------------------------------------- //

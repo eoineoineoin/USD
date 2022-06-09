@@ -203,11 +203,12 @@ class PhysicsCollisionGroup "PhysicsCollisionGroup" (
         doc = """References a list of PhysicsCollisionGroups with which 
         collisions should be ignored."""
     )
-    bool physics:invertFilter (
-        displayName = "Inverted"
-        doc = """If set, this collision group will collide only with colliders
-        in the filteredGroups. If unset, this collision group will collide with
-        all other colliders except those listed in filteredGroups"""
+    bool physics:invertFilteredGroups (
+        displayName = "Invert Filtered Groups"
+        doc = """Normally, the filter will disable collisions against the selected
+        filter groups. However, if this option is set, the filter will disable
+        collisions against all colliders except for those in the selected filter
+        groups."""
     )
     string physics:mergeGroup (
         displayName = "Merge With Groups"

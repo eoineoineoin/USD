@@ -106,7 +106,7 @@ void wrapUsdPhysicsTokens()
     _AddToken(cls, "physicsFilteredPairs", UsdPhysicsTokens->physicsFilteredPairs);
     _AddToken(cls, "physicsGravityDirection", UsdPhysicsTokens->physicsGravityDirection);
     _AddToken(cls, "physicsGravityMagnitude", UsdPhysicsTokens->physicsGravityMagnitude);
-    _AddToken(cls, "physicsInvertFilter", UsdPhysicsTokens->physicsInvertFilter);
+    _AddToken(cls, "physicsInvertFilteredGroups", UsdPhysicsTokens->physicsInvertFilteredGroups);
     _AddToken(cls, "physicsJointEnabled", UsdPhysicsTokens->physicsJointEnabled);
     _AddToken(cls, "physicsKinematicEnabled", UsdPhysicsTokens->physicsKinematicEnabled);
     _AddToken(cls, "physicsLocalPos0", UsdPhysicsTokens->physicsLocalPos0);

@@ -433,28 +433,33 @@ in the group. Each group also has a multi-target relationship to other groups
 in any CollisionGroup collide with all other colliders in the scene, except for
 those colliders which have disabled collision by default.
 
-In order to allow for a collider whose collision is disabled by default, a
-CollisionGroup has an invertFilter option; when this value is set, a collider
-in the CollisionGroup should be considered to collide with no other colliders,
-except those specified as members of the filtered groups.
+For behavioral or performance reasons, it is sometimes useful to configure a
+collider whose collision is disabled by default. To support this, the
+CollisionGroup has an invertFilteredGroups option; when this value is set, an
+implementation should disable collisions against all other colliders except for
+those in the referenced filteredGroups. Note that the collisions which were not
+disabled may still be further restricted by additional collision groups or pair
+filters.
 
 When composing a stage from multiple USD scenes, it may be desirable to merge
-CollisionGroups. For example, a stage composed of multiple characters, each with
-a ragdoll as well as a character "controller" - the character controllers should
-not collide with the ragdoll instances. A CollisionGroup contains an optional
+CollisionGroups, particularly if the stage composition is not known ahead of
+time. For example, a stage composed of multiple characters, each with a ragdoll
+as well as a character "controller" - the character controllers should not
+collide with the ragdoll instances. A CollisionGroup contains an optional
 mergeGroupName, and all groups with matching name should be considered to be
 part of a single group, whose members and filter groups should be the union of
 the merged groups. This allows the character file to define a group which
-disables the controller-versus-ragdoll collisions; by assigning a mergeGroupName
-to this group, the controller can be filtered against ragdoll bodies in all
-other instances of the character.
+disables the controller-versus-ragdoll collisions; by assigning a
+mergeGroupName to this group, the controller can be filtered against ragdoll
+bodies in all other instances of the character.
 
-Care should be taken when merging groups with differing invertFilter options;
-typically, this merge will result in a group which collides with less objects.
-Consider an inverted group which references only GroupX (i.e. bodies in this
-group will not collide with anything except those in GroupX) which merges with a
-non-inverting group which references the same GroupX (i.e. collides with
-everything except GroupX) - the merged group will collide with nothing, since
+Care should be taken when merging groups with differing invertFilteredGroups
+options; merging of groups should only ever cause collision pairs to become
+disabled - i.e. a filter cannot re-enable a pair that has been disabled by any
+other group.  Consider an inverted group which references only GroupX (i.e.
+disables collisions with everything except those in GroupX).  When merging this
+group with a non-inverting group referencing the same GroupX (i.e.  disables
+collisions against GroupX) - the merged group will collide with nothing, since
 the combined rules of the merged groups will filter out any other body.
 
 \subsubsection usdPhysics_pairwise_filtering Pairwise Filtering
