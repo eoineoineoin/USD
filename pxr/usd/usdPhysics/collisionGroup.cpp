@@ -192,6 +192,8 @@ PXR_NAMESPACE_CLOSE_SCOPE
 // ===================================================================== //
 // --(BEGIN CUSTOM CODE)--
 
+#include "pxr/usd/usd/primRange.h"
+
 PXR_NAMESPACE_OPEN_SCOPE
 
 
@@ -199,6 +201,137 @@ UsdCollectionAPI
 UsdPhysicsCollisionGroup::GetCollidersCollectionAPI() const
 {
     return UsdCollectionAPI(GetPrim(), UsdPhysicsTokens->colliders);
+}
+
+UsdPhysicsCollisionGroup::CollisionGroupTable
+UsdPhysicsCollisionGroup::ComputeCollisionGroupTable(const UsdStage& stage)
+{
+    // Prepare the output now, as we'll want to iterate over all the CollisionGroups several times
+    CollisionGroupTable res;
+    for (const UsdPrim& prim : UsdPrimRange::UsdPrimRange(stage.GetPseudoRoot()))
+    {
+        if (prim.IsA<UsdPhysicsCollisionGroup>())
+        {
+            res.groups.emplace_back(prim);
+        }
+    }
+
+    res.enabled.resize(((res.groups.size() + 1) * res.groups.size()) / 2, true);
+
+    // First, let's assign a number to every collision group; in order to handle merge groups,
+    // some prims will have non-unique indices
+    std::map<SdfPath, size_t> primPathToIndex; // Using SdfPath, rather than prim, as the filtered groups rel gives us a path.
+    std::map<std::string, size_t> mergeGroupNameToIndex;
+    int nextPrimId = 0;
+
+    for (const UsdPhysicsCollisionGroup& collisionGroup : res.groups)
+    {
+        UsdAttribute mergeGroupAttr = collisionGroup.GetMergeGroupNameAttr();
+
+        // If the group doesn't have a merge group, we can just add it to the table:
+        if (!mergeGroupAttr.IsAuthored())
+        {
+            primPathToIndex[collisionGroup.GetPath()] = nextPrimId;
+            nextPrimId++;
+        }
+        else
+        {
+            std::string mergeGroupName;
+            mergeGroupAttr.Get(&mergeGroupName);
+            auto foundGroup = mergeGroupNameToIndex.find(mergeGroupName);
+            if (foundGroup != mergeGroupNameToIndex.end())
+            {
+                primPathToIndex[collisionGroup.GetPath()] = foundGroup->second;
+            }
+            else
+            {
+                mergeGroupNameToIndex[mergeGroupName] = nextPrimId;
+                primPathToIndex[collisionGroup.GetPath()] = nextPrimId;
+                nextPrimId++;
+            }
+        }
+    }
+
+    // Now, we've seen "nextPrimId" different unique groups after accounting for the merge groups.
+    // Calculate the collision table for those groups.
+
+    // First, resize the table and set to default-collide. We're only going to use the upper diagonal,
+    // as the table is symmetric:
+    std::vector<bool> mergedTable;
+    mergedTable.resize( ((nextPrimId + 1) * nextPrimId) / 2, true);
+
+    for (const UsdPhysicsCollisionGroup& groupA : res.groups)
+    {
+        int groupAIdx = primPathToIndex[groupA.GetPath()];
+
+        // Extract the indices for each filtered group in "prim":
+        std::vector<int> filteredGroupIndices;
+        {
+            UsdRelationship filteredGroups = groupA.GetFilteredGroupsRel();
+            SdfPathVector filteredTargets;
+            filteredGroups.GetTargets(&filteredTargets);
+            for(const SdfPath& path : filteredTargets)
+            {
+                filteredGroupIndices.push_back(primPathToIndex[path]);
+            }
+        }
+
+        bool invertedFilter;
+        UsdAttribute invertedAttr = groupA.GetInvertFilteredGroupsAttr();
+        invertedAttr.Get(&invertedFilter);
+
+        // Now, we are ready to apply the filter rules for "prim":
+        if (!invertedAttr.IsAuthored() || !invertedFilter)
+        {
+            // This is the usual case; collisions against all the filteredTargets should be disabled
+            for (int groupBIdx : filteredGroupIndices)
+            {
+                // Disable aIdx -v- bIdx
+                int minGroup = std::min(groupAIdx, groupBIdx);
+                int maxGroup = std::max(groupAIdx, groupBIdx);
+                int numSkippedEntries = (minGroup * minGroup + minGroup) / 2;
+                mergedTable[minGroup * nextPrimId - numSkippedEntries  + maxGroup] = false;
+            }
+        }
+        else
+        {
+            // This is the less common case; disable collisions against all groups except the filtered targets
+            std::set<int> requestedGroups(filteredGroupIndices.begin(), filteredGroupIndices.end());
+            for(int groupBIdx = 0; groupBIdx < nextPrimId; groupBIdx++)
+            {
+                if (requestedGroups.find(groupBIdx) != requestedGroups.end())
+                {
+                    // Disable aIdx -v- bIdx
+                    int minGroup = std::min(groupAIdx, groupBIdx);
+                    int maxGroup = std::max(groupAIdx, groupBIdx);
+                    int numSkippedEntries = (minGroup * minGroup + minGroup) / 2;
+                    mergedTable[minGroup * nextPrimId - numSkippedEntries + maxGroup] = false;
+                }
+            }
+        }
+    }
+
+    // Finally, we can calculate the output table. Iterate over every group A and B, and
+    // use the merged table to determine if they collide.
+    for (int iA = 0; iA < res.groups.size(); iA++)
+    {
+        for (int iB = iA; iB < res.groups.size(); iB++)
+        {
+            // Determine if the groups at iA and iB collide:
+            int groupAId = primPathToIndex[res.groups[iA].GetPath()];
+            int groupBId = primPathToIndex[res.groups[iB].GetPath()];
+            int numSkippedMergeEntries = (groupAId * groupAId + groupAId) / 2;
+            bool enabledInMergeTable = mergedTable[groupAId * nextPrimId - numSkippedMergeEntries + groupBId];
+
+            // And use that to populate the output table:
+            int minGroup = std::min(iA, iB);
+            int maxGroup = std::max(iA, iB);
+            int numSkippedEntries = (minGroup * minGroup + minGroup) / 2;
+            res.enabled[minGroup * res.groups.size() - numSkippedEntries + maxGroup] = enabledInMergeTable;
+        }
+    }
+
+    return res;
 }
 
 PXR_NAMESPACE_CLOSE_SCOPE
