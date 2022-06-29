@@ -206,25 +206,22 @@ UsdPhysicsCollisionGroup::GetCollidersCollectionAPI() const
 UsdPhysicsCollisionGroup::CollisionGroupTable
 UsdPhysicsCollisionGroup::ComputeCollisionGroupTable(const UsdStage& stage)
 {
-    // Prepare the output now, as we'll want to iterate over all the CollisionGroups several times
-    CollisionGroupTable res;
+    // First, collect all the collision groups, as we want to iterate over them several times
+    std::vector<UsdPhysicsCollisionGroup> allSceneGroups;
     for (const UsdPrim& prim : UsdPrimRange::UsdPrimRange(stage.GetPseudoRoot()))
     {
         if (prim.IsA<UsdPhysicsCollisionGroup>())
         {
-            res.groups.emplace_back(prim);
+            allSceneGroups.emplace_back(prim);
         }
     }
 
-    res.enabled.resize(((res.groups.size() + 1) * res.groups.size()) / 2, true);
-
-    // First, let's assign a number to every collision group; in order to handle merge groups,
-    // some prims will have non-unique indices
+    // Assign a number to every collision group; in order to handle merge groups, some prims will have non-unique indices
     std::map<SdfPath, size_t> primPathToIndex; // Using SdfPath, rather than prim, as the filtered groups rel gives us a path.
     std::map<std::string, size_t> mergeGroupNameToIndex;
     int nextPrimId = 0;
 
-    for (const UsdPhysicsCollisionGroup& collisionGroup : res.groups)
+    for (const UsdPhysicsCollisionGroup& collisionGroup : allSceneGroups)
     {
         UsdAttribute mergeGroupAttr = collisionGroup.GetMergeGroupNameAttr();
 
@@ -260,7 +257,7 @@ UsdPhysicsCollisionGroup::ComputeCollisionGroupTable(const UsdStage& stage)
     std::vector<bool> mergedTable;
     mergedTable.resize( ((nextPrimId + 1) * nextPrimId) / 2, true);
 
-    for (const UsdPhysicsCollisionGroup& groupA : res.groups)
+    for (const UsdPhysicsCollisionGroup& groupA : allSceneGroups)
     {
         int groupAIdx = primPathToIndex[groupA.GetPath()];
 
@@ -311,15 +308,22 @@ UsdPhysicsCollisionGroup::ComputeCollisionGroupTable(const UsdStage& stage)
         }
     }
 
-    // Finally, we can calculate the output table. Iterate over every group A and B, and
-    // use the merged table to determine if they collide.
-    for (int iA = 0; iA < res.groups.size(); iA++)
+    // Finally, we can calculate the output table, based on the merged table
+    CollisionGroupTable res;
+    for (const UsdPhysicsCollisionGroup& collisionGroup : allSceneGroups)
     {
-        for (int iB = iA; iB < res.groups.size(); iB++)
+        res.groups.push_back(collisionGroup.GetPrim());
+    }
+    res.enabled.resize(((res.groups.size() + 1) * res.groups.size()) / 2, true);
+
+    // Iterate over every group A and B, and use the merged table to determine if they collide.
+    for (int iA = 0; iA < allSceneGroups.size(); iA++)
+    {
+        for (int iB = iA; iB < allSceneGroups.size(); iB++)
         {
             // Determine if the groups at iA and iB collide:
-            int groupAId = primPathToIndex[res.groups[iA].GetPath()];
-            int groupBId = primPathToIndex[res.groups[iB].GetPath()];
+            int groupAId = primPathToIndex[allSceneGroups[iA].GetPath()];
+            int groupBId = primPathToIndex[allSceneGroups[iB].GetPath()];
             int numSkippedMergeEntries = (groupAId * groupAId + groupAId) / 2;
             bool enabledInMergeTable = mergedTable[groupAId * nextPrimId - numSkippedMergeEntries + groupBId];
 
@@ -327,7 +331,7 @@ UsdPhysicsCollisionGroup::ComputeCollisionGroupTable(const UsdStage& stage)
             int minGroup = std::min(iA, iB);
             int maxGroup = std::max(iA, iB);
             int numSkippedEntries = (minGroup * minGroup + minGroup) / 2;
-            res.enabled[minGroup * res.groups.size() - numSkippedEntries + maxGroup] = enabledInMergeTable;
+            res.enabled[minGroup * allSceneGroups.size() - numSkippedEntries + maxGroup] = enabledInMergeTable;
         }
     }
 

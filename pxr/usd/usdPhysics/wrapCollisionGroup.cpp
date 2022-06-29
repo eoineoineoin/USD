@@ -149,13 +149,34 @@ void wrapUsdPhysicsCollisionGroup()
 // ===================================================================== //
 // --(BEGIN CUSTOM CODE)--
 
+#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
+
 namespace {
 
 WRAP_CUSTOM {
+    typedef UsdPhysicsCollisionGroup This;
+
     _class
         .def("GetCollidersCollectionAPI",
-             &UsdPhysicsCollisionGroup::GetCollidersCollectionAPI)
+             &This::GetCollidersCollectionAPI)
+        .def("ComputeCollisionGroupTable",
+             &This::ComputeCollisionGroupTable,
+             arg("stage"),
+             return_value_policy<return_by_value>())
+        .staticmethod("ComputeCollisionGroupTable")
         ;
+
+    // class_<std::vector<UsdPrim>>("CollisionGroupList")
+    //     .def(vector_indexing_suite<std::vector<UsdPrim>>() );
+    class_<std::vector<bool>>("BooleanList")
+        .def(vector_indexing_suite<std::vector<bool>>() );
+
+
+    class_<UsdPhysicsCollisionGroup::CollisionGroupTable>("CollisionGroupTable")
+        .def_readwrite("groups", &UsdPhysicsCollisionGroup::CollisionGroupTable::groups)
+        .def_readwrite("enabled", &UsdPhysicsCollisionGroup::CollisionGroupTable::enabled)
+        ;
+
 }
 
 }

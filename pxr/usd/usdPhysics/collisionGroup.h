@@ -243,8 +243,8 @@ public:
     // which pairs of collision groups have collisions enabled/disabled by the filtering rules.
     struct CollisionGroupTable
     {
-        std::vector<UsdPhysicsCollisionGroup> groups; //< All collision groups known to this table
-        std::vector<bool> enabled;             //< 2D table, with one element per collision-group-pair. Entry is false if collision is disabled by a filtering rule.
+        std::vector<UsdPrim> groups; //< All collision groups known to this table
+        std::vector<bool> enabled; //< 2D table, with one element per collision-group-pair. Entry is false if collision is disabled by a filtering rule.
     };
 
     /// Compute a table encoding all the collision groups filter rules for a stage. This can be used
