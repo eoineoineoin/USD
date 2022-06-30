@@ -153,6 +153,33 @@ void wrapUsdPhysicsCollisionGroup()
 
 namespace {
 
+static std::vector<UsdPrim>
+_WrapGetGroups(const UsdPhysicsCollisionGroup::CollisionGroupTable &table)
+{
+    return table.GetCollisionGroups();
+}
+
+static bool
+_WrapIsCollisionEnabled(const UsdPhysicsCollisionGroup::CollisionGroupTable &table,
+boost::python::object a, boost::python::object b)
+{
+    boost::python::extract<int> extractIntA(a);
+    boost::python::extract<int> extractIntB(b);
+    if (extractIntA.check() && extractIntB.check())
+    {
+        return table.IsCollisionEnabled(extractIntA(), extractIntB());
+    }
+
+    boost::python::extract<UsdPrim> extractPrimA(a);
+    boost::python::extract<UsdPrim> extractPrimB(b);
+    if (extractPrimA.check() && extractPrimB.check())
+    {
+        return table.IsCollisionEnabled(extractPrimA(), extractPrimB());
+    }
+
+    return true;
+}
+
 WRAP_CUSTOM {
     typedef UsdPhysicsCollisionGroup This;
 
@@ -166,17 +193,11 @@ WRAP_CUSTOM {
         .staticmethod("ComputeCollisionGroupTable")
         ;
 
-    // class_<std::vector<UsdPrim>>("CollisionGroupList")
-    //     .def(vector_indexing_suite<std::vector<UsdPrim>>() );
-    class_<std::vector<bool>>("BooleanList")
-        .def(vector_indexing_suite<std::vector<bool>>() );
-
-
     class_<UsdPhysicsCollisionGroup::CollisionGroupTable>("CollisionGroupTable")
-        .def_readwrite("groups", &UsdPhysicsCollisionGroup::CollisionGroupTable::groups)
-        .def_readwrite("enabled", &UsdPhysicsCollisionGroup::CollisionGroupTable::enabled)
+        .def("GetGroups", &_WrapGetGroups,
+             return_value_policy<TfPySequenceToList>())
+        .def("IsCollisionEnabled", &_WrapIsCollisionEnabled)
         ;
-
 }
 
 }

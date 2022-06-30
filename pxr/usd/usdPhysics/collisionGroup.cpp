@@ -193,15 +193,46 @@ PXR_NAMESPACE_CLOSE_SCOPE
 // --(BEGIN CUSTOM CODE)--
 
 #include "pxr/usd/usd/primRange.h"
+#include <algorithm>
 
 PXR_NAMESPACE_OPEN_SCOPE
-
 
 UsdCollectionAPI
 UsdPhysicsCollisionGroup::GetCollidersCollectionAPI() const
 {
     return UsdCollectionAPI(GetPrim(), UsdPhysicsTokens->colliders);
 }
+
+const std::vector<UsdPrim>&
+UsdPhysicsCollisionGroup::CollisionGroupTable::GetCollisionGroups() const
+{
+    return groups;
+}
+
+bool
+UsdPhysicsCollisionGroup::CollisionGroupTable::IsCollisionEnabled(int idxA, int idxB) const
+{
+    if (idxA > 0 && idxB > 0 && idxA < groups.size() && idxB < groups.size())
+    {
+        int minGroup = std::min(idxA, idxB);
+        int maxGroup = std::max(idxA, idxB);
+        int numSkippedEntries = (minGroup * minGroup + minGroup) / 2;
+        return enabled[minGroup * groups.size() - numSkippedEntries + maxGroup];
+    }
+
+    // If the groups aren't in the table or we've been passed invalid groups,
+    // return true, as groups will collide by default.
+    return true;
+}
+
+bool
+UsdPhysicsCollisionGroup::CollisionGroupTable::IsCollisionEnabled(const UsdPrim& primA, const UsdPrim& primB) const
+{
+    auto a = std::find(groups.begin(), groups.end(), primA);
+    auto b = std::find(groups.begin(), groups.end(), primB);
+    return IsCollisionEnabled(std::distance(groups.begin(), a), std::distance(groups.begin(), b));
+}
+
 
 UsdPhysicsCollisionGroup::CollisionGroupTable
 UsdPhysicsCollisionGroup::ComputeCollisionGroupTable(const UsdStage& stage)

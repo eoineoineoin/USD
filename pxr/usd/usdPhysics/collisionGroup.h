@@ -243,6 +243,20 @@ public:
     // which pairs of collision groups have collisions enabled/disabled by the filtering rules.
     struct CollisionGroupTable
     {
+        /// Return the set of all UsdPhysicsCollisionGroup which this table contains
+        USDPHYSICS_API
+        const std::vector<UsdPrim>& GetCollisionGroups() const;
+
+        /// Return true if the groups at indices \a idxA and \a idxB collide
+        USDPHYSICS_API
+        bool IsCollisionEnabled(int idxA, int idxB) const;
+
+        /// Return true if the groups \a primA and \a primB collide
+        USDPHYSICS_API
+        bool IsCollisionEnabled(const UsdPrim& primA, const UsdPrim& primB) const;
+
+    protected:
+        friend class UsdPhysicsCollisionGroup;
         std::vector<UsdPrim> groups; //< All collision groups known to this table
         std::vector<bool> enabled; //< 2D table, with one element per collision-group-pair. Entry is false if collision is disabled by a filtering rule.
     };
