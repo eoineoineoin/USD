@@ -212,7 +212,7 @@ UsdPhysicsCollisionGroup::CollisionGroupTable::GetCollisionGroups() const
 bool
 UsdPhysicsCollisionGroup::CollisionGroupTable::IsCollisionEnabled(int idxA, int idxB) const
 {
-    if (idxA > 0 && idxB > 0 && idxA < groups.size() && idxB < groups.size())
+    if (idxA >= 0 && idxB >= 0 && idxA < groups.size() && idxB < groups.size())
     {
         int minGroup = std::min(idxA, idxB);
         int maxGroup = std::max(idxA, idxB);
@@ -327,7 +327,7 @@ UsdPhysicsCollisionGroup::ComputeCollisionGroupTable(const UsdStage& stage)
             std::set<int> requestedGroups(filteredGroupIndices.begin(), filteredGroupIndices.end());
             for(int groupBIdx = 0; groupBIdx < nextPrimId; groupBIdx++)
             {
-                if (requestedGroups.find(groupBIdx) != requestedGroups.end())
+                if (requestedGroups.find(groupBIdx) == requestedGroups.end())
                 {
                     // Disable aIdx -v- bIdx
                     int minGroup = std::min(groupAIdx, groupBIdx);
