@@ -170,6 +170,13 @@ boost::python::object a, boost::python::object b)
         return table.IsCollisionEnabled(extractIntA(), extractIntB());
     }
 
+    boost::python::extract<UsdPhysicsCollisionGroup> extractGroupA(a);
+    boost::python::extract<UsdPhysicsCollisionGroup> extractGroupB(b);
+    if (extractGroupA.check() && extractGroupB.check())
+    {
+        return table.IsCollisionEnabled(extractGroupA().GetPrim(), extractGroupB().GetPrim());
+    }
+
     boost::python::extract<UsdPrim> extractPrimA(a);
     boost::python::extract<UsdPrim> extractPrimB(b);
     if (extractPrimA.check() && extractPrimB.check())
