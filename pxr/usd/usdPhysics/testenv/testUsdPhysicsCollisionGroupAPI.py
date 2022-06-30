@@ -26,6 +26,13 @@ import sys, os, unittest
 from pxr import Tf, Usd, Sdf, UsdGeom, UsdShade, Gf, UsdPhysics
 
 class TestUsdPhysicsCollisionGroupAPI(unittest.TestCase):
+    def validate_table_symmetry(self, table):
+        for iA, a in enumerate(table.GetGroups()):
+            for iB, b in enumerate(table.GetGroups()):
+                self.assertEqual(table.IsCollisionEnabled(iA, iB), table.IsCollisionEnabled(iB, iA))
+                self.assertEqual(table.IsCollisionEnabled(a, b), table.IsCollisionEnabled(b, a))
+                self.assertEqual(table.IsCollisionEnabled(a, b), table.IsCollisionEnabled(iA, iB))
+
     def test_collision_group_table(self):
         stage = Usd.Stage.CreateInMemory()
         self.assertTrue(stage)
@@ -54,6 +61,7 @@ class TestUsdPhysicsCollisionGroupAPI(unittest.TestCase):
         self.assertTrue(table.IsCollisionEnabled(b, b));
         self.assertFalse(table.IsCollisionEnabled(b, c));
         self.assertFalse(table.IsCollisionEnabled(c, c));
+        self.validate_table_symmetry(table)
 
 
     def test_collision_group_inversion(self):
@@ -78,6 +86,7 @@ class TestUsdPhysicsCollisionGroupAPI(unittest.TestCase):
         self.assertTrue(table.IsCollisionEnabled(b, b));
         self.assertTrue(table.IsCollisionEnabled(b, c));
         self.assertTrue(table.IsCollisionEnabled(c, c));
+        self.validate_table_symmetry(table)
 
     def test_collision_group_simple_merging(self):
         stage = Usd.Stage.CreateInMemory()
@@ -103,6 +112,7 @@ class TestUsdPhysicsCollisionGroupAPI(unittest.TestCase):
         self.assertTrue(table.IsCollisionEnabled(b, b));
         self.assertFalse(table.IsCollisionEnabled(b, c));
         self.assertTrue(table.IsCollisionEnabled(c, c));
+        self.validate_table_symmetry(table)
 
     def test_collision_group_complex_merging(self):
         stage = Usd.Stage.CreateInMemory()
@@ -139,6 +149,7 @@ class TestUsdPhysicsCollisionGroupAPI(unittest.TestCase):
         self.assertTrue(table.IsCollisionEnabled(c, c));
         self.assertTrue(table.IsCollisionEnabled(c, d));
         self.assertTrue(table.IsCollisionEnabled(d, d));
+        self.validate_table_symmetry(table)
 
 if __name__ == "__main__":
     unittest.main()
