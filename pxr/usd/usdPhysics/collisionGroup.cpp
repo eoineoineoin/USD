@@ -203,7 +203,7 @@ UsdPhysicsCollisionGroup::GetCollidersCollectionAPI() const
     return UsdCollectionAPI(GetPrim(), UsdPhysicsTokens->colliders);
 }
 
-const std::vector<UsdPrim>&
+const SdfPathVector&
 UsdPhysicsCollisionGroup::CollisionGroupTable::GetCollisionGroups() const
 {
     return groups;
@@ -226,7 +226,7 @@ UsdPhysicsCollisionGroup::CollisionGroupTable::IsCollisionEnabled(int idxA, int 
 }
 
 bool
-UsdPhysicsCollisionGroup::CollisionGroupTable::IsCollisionEnabled(const UsdPrim& primA, const UsdPrim& primB) const
+UsdPhysicsCollisionGroup::CollisionGroupTable::IsCollisionEnabled(const SdfPath& primA, const SdfPath& primB) const
 {
     auto a = std::find(groups.begin(), groups.end(), primA);
     auto b = std::find(groups.begin(), groups.end(), primB);
@@ -239,7 +239,8 @@ UsdPhysicsCollisionGroup::ComputeCollisionGroupTable(const UsdStage& stage)
 {
     // First, collect all the collision groups, as we want to iterate over them several times
     std::vector<UsdPhysicsCollisionGroup> allSceneGroups;
-    for (const UsdPrim& prim : UsdPrimRange::UsdPrimRange(stage.GetPseudoRoot()))
+    const UsdPrimRange range(stage.GetPseudoRoot());
+    for (const UsdPrim& prim : range)
     {
         if (prim.IsA<UsdPhysicsCollisionGroup>())
         {
@@ -343,7 +344,7 @@ UsdPhysicsCollisionGroup::ComputeCollisionGroupTable(const UsdStage& stage)
     CollisionGroupTable res;
     for (const UsdPhysicsCollisionGroup& collisionGroup : allSceneGroups)
     {
-        res.groups.push_back(collisionGroup.GetPrim());
+        res.groups.push_back(collisionGroup.GetPrim().GetPrimPath());
     }
     res.enabled.resize(((res.groups.size() + 1) * res.groups.size()) / 2, true);
 

@@ -153,7 +153,7 @@ void wrapUsdPhysicsCollisionGroup()
 
 namespace {
 
-static std::vector<UsdPrim>
+static SdfPathVector
 _WrapGetGroups(const UsdPhysicsCollisionGroup::CollisionGroupTable &table)
 {
     return table.GetCollisionGroups();
@@ -170,18 +170,25 @@ boost::python::object a, boost::python::object b)
         return table.IsCollisionEnabled(extractIntA(), extractIntB());
     }
 
-    boost::python::extract<UsdPhysicsCollisionGroup> extractGroupA(a);
-    boost::python::extract<UsdPhysicsCollisionGroup> extractGroupB(b);
-    if (extractGroupA.check() && extractGroupB.check())
+    boost::python::extract<SdfPath> extractPathA(a);
+    boost::python::extract<SdfPath> extractPathB(b);
+    if (extractPathA.check() && extractPathB.check())
     {
-        return table.IsCollisionEnabled(extractGroupA().GetPrim(), extractGroupB().GetPrim());
+        return table.IsCollisionEnabled(extractPathA(), extractPathB());
+    }
+
+    boost::python::extract<UsdPhysicsCollisionGroup> extractColGroupA(a);
+    boost::python::extract<UsdPhysicsCollisionGroup> extractColGroupB(b);
+    if (extractColGroupA.check() && extractColGroupB.check())
+    {
+        return table.IsCollisionEnabled(extractColGroupA().GetPrim().GetPrimPath(), extractColGroupB().GetPrim().GetPrimPath());
     }
 
     boost::python::extract<UsdPrim> extractPrimA(a);
     boost::python::extract<UsdPrim> extractPrimB(b);
     if (extractPrimA.check() && extractPrimB.check())
     {
-        return table.IsCollisionEnabled(extractPrimA(), extractPrimB());
+        return table.IsCollisionEnabled(extractPrimA().GetPrimPath(), extractPrimB().GetPrimPath());
     }
 
     return true;
