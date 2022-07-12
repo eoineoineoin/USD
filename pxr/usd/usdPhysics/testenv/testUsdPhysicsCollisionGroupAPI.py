@@ -48,9 +48,9 @@ class TestUsdPhysicsCollisionGroupAPI(unittest.TestCase):
 
         # Check the results contain all the groups:
         self.assertTrue(len(table.GetGroups()) == 3)
-        self.assertTrue(a.GetPrim() in table.GetGroups())
-        self.assertTrue(b.GetPrim() in table.GetGroups())
-        self.assertTrue(c.GetPrim() in table.GetGroups())
+        self.assertTrue(a.GetPrim().GetPath() in table.GetGroups())
+        self.assertTrue(b.GetPrim().GetPath() in table.GetGroups())
+        self.assertTrue(c.GetPrim().GetPath() in table.GetGroups())
 
         # A should collide with everything
         # B should only collide with A and B
