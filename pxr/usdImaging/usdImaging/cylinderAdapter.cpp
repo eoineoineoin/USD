@@ -44,28 +44,58 @@
 PXR_NAMESPACE_OPEN_SCOPE
 
 namespace {
-using _PrimSource = UsdImagingDataSourceImplicitsPrim<UsdGeomCylinder_1, HdCylinderSchema>;
+using _PrimSource0 = UsdImagingDataSourceImplicitsPrim<UsdGeomCylinder, HdCylinderSchema>;
+using _PrimSource1 = UsdImagingDataSourceImplicitsPrim<UsdGeomCylinder_1, HdCylinderSchema>;
 }
+
+class UsdImagingCylinderAdapter_0 : public UsdImagingCylinderAdapterBase<_PrimSource0> {
+public:
+
+    // Override the implemetation in GprimAdapter since we don't fetch the
+    // points attribute for implicit primitives.
+    USDIMAGING_API
+    VtValue GetPoints(
+        UsdPrim const& prim,
+        UsdTimeCode time) const override;
+};
+
+class UsdImagingCylinderAdapter_1 : public UsdImagingCylinderAdapterBase<_PrimSource1> {
+public:
+
+    // Override the implemetation in GprimAdapter since we don't fetch the
+    // points attribute for implicit primitives.
+    USDIMAGING_API
+    VtValue GetPoints(
+        UsdPrim const& prim,
+        UsdTimeCode time) const override;
+};
+
 
 TF_REGISTRY_FUNCTION(TfType)
 {
-    typedef UsdImagingCylinderAdapter Adapter;
-    TfType t = TfType::Define<Adapter, TfType::Bases<Adapter::BaseAdapter> >();
-    t.SetFactory< UsdImagingPrimAdapterFactory<Adapter> >();
+    typedef UsdImagingCylinderAdapter_0 Adapter0;
+    TfType t0 = TfType::Define<Adapter0, TfType::Bases<Adapter0::BaseAdapter> >();
+    t0.SetFactory< UsdImagingPrimAdapterFactory<Adapter0> >();
+    typedef UsdImagingCylinderAdapter_1 Adapter1;
+    TfType t1 = TfType::Define<Adapter1, TfType::Bases<Adapter1::BaseAdapter> >();
+    t1.SetFactory< UsdImagingPrimAdapterFactory<Adapter1> >();
 }
 
-UsdImagingCylinderAdapter::~UsdImagingCylinderAdapter() 
+template <typename PrimSource>
+UsdImagingCylinderAdapterBase<PrimSource>::~UsdImagingCylinderAdapterBase() 
 {
 }
 
+template <typename PrimSource>
 TfTokenVector
-UsdImagingCylinderAdapter::GetImagingSubprims(UsdPrim const& prim)
+UsdImagingCylinderAdapterBase<PrimSource>::GetImagingSubprims(UsdPrim const& prim)
 {
     return { TfToken() };
 }
 
+template <typename PrimSource>
 TfToken
-UsdImagingCylinderAdapter::GetImagingSubprimType(
+UsdImagingCylinderAdapterBase<PrimSource>::GetImagingSubprimType(
         UsdPrim const& prim,
         TfToken const& subprim)
 {
@@ -75,14 +105,15 @@ UsdImagingCylinderAdapter::GetImagingSubprimType(
     return TfToken();
 }
 
+template <typename PrimSource>
 HdContainerDataSourceHandle
-UsdImagingCylinderAdapter::GetImagingSubprimData(
+UsdImagingCylinderAdapterBase<PrimSource>::GetImagingSubprimData(
         UsdPrim const& prim,
         TfToken const& subprim,
         const UsdImagingDataSourceStageGlobals &stageGlobals)
 {
     if (subprim.IsEmpty()) {
-        return _PrimSource::New(
+        return PrimSource::New(
             prim.GetPath(),
             prim,
             stageGlobals);
@@ -90,27 +121,30 @@ UsdImagingCylinderAdapter::GetImagingSubprimData(
     return nullptr;
 }
 
+template <typename PrimSource>
 HdDataSourceLocatorSet
-UsdImagingCylinderAdapter::InvalidateImagingSubprim(
+UsdImagingCylinderAdapterBase<PrimSource>::InvalidateImagingSubprim(
         UsdPrim const& prim,
         TfToken const& subprim,
         TfTokenVector const& properties)
 {
     if (subprim.IsEmpty()) {
-        return _PrimSource::Invalidate(prim, subprim, properties);
+        return PrimSource::Invalidate(prim, subprim, properties);
     }
     
     return HdDataSourceLocatorSet();
 }
 
+template <typename PrimSource>
 bool
-UsdImagingCylinderAdapter::IsSupported(UsdImagingIndexProxy const* index) const
+UsdImagingCylinderAdapterBase<PrimSource>::IsSupported(UsdImagingIndexProxy const* index) const
 {
     return index->IsRprimTypeSupported(HdPrimTypeTokens->mesh);
 }
 
+template <typename PrimSource>
 SdfPath
-UsdImagingCylinderAdapter::Populate(UsdPrim const& prim, 
+UsdImagingCylinderAdapterBase<PrimSource>::Populate(UsdPrim const& prim, 
                             UsdImagingIndexProxy* index,
                             UsdImagingInstancerContext const* instancerContext)
 
@@ -119,8 +153,9 @@ UsdImagingCylinderAdapter::Populate(UsdPrim const& prim,
                      prim, index, GetMaterialUsdPath(prim), instancerContext);
 }
 
+template <typename PrimSource>
 void 
-UsdImagingCylinderAdapter::TrackVariability(UsdPrim const& prim,
+UsdImagingCylinderAdapterBase<PrimSource>::TrackVariability(UsdPrim const& prim,
                                           SdfPath const& cachePath,
                                           HdDirtyBits* timeVaryingBits,
                                           UsdImagingInstancerContext const* 
@@ -157,8 +192,9 @@ UsdImagingCylinderAdapter::TrackVariability(UsdPrim const& prim,
     }
 }
 
+template <typename PrimSource>
 HdDirtyBits
-UsdImagingCylinderAdapter::ProcessPropertyChange(UsdPrim const& prim,
+UsdImagingCylinderAdapterBase<PrimSource>::ProcessPropertyChange(UsdPrim const& prim,
                                                  SdfPath const& cachePath,
                                                  TfToken const& propertyName)
 {
@@ -172,9 +208,69 @@ UsdImagingCylinderAdapter::ProcessPropertyChange(UsdPrim const& prim,
     return BaseAdapter::ProcessPropertyChange(prim, cachePath, propertyName);
 }
 
+template <typename PrimSource>
+/*virtual*/ 
+VtValue
+UsdImagingCylinderAdapterBase<PrimSource>::GetTopology(UsdPrim const& prim,
+                                       SdfPath const& cachePath,
+                                       UsdTimeCode time) const
+{
+    TRACE_FUNCTION();
+    HF_MALLOC_TAG_FUNCTION();
+    
+    // All cylinders share the same topology.
+    static const HdMeshTopology topology =
+        HdMeshTopology(GeomUtilCylinderMeshGenerator::GenerateTopology(
+                            numRadial));
+
+    return VtValue(topology);
+}
+
 /*virtual*/
 VtValue
-UsdImagingCylinderAdapter::GetPoints(UsdPrim const& prim,
+UsdImagingCylinderAdapter_0::GetPoints(UsdPrim const& prim,
+                                     UsdTimeCode time) const
+{
+    UsdGeomCylinder cylinder(prim);
+
+    double height = 2.0;
+    UsdGeomSphere sphere(prim);
+    if (!cylinder.GetHeightAttr().Get(&height, time)) {
+        TF_WARN("Could not evaluate double-valued height attribute on prim %s",
+            prim.GetPath().GetText());
+    }
+    double radius = 1.0;
+    if (!cylinder.GetRadiusAttr().Get(&radius, time)) {
+        TF_WARN("Could not evaluate double-valued radius attribute on prim %s",
+            prim.GetPath().GetText());
+    }
+    TfToken axis = UsdGeomTokens->z;
+    if (!cylinder.GetAxisAttr().Get(&axis, time)) {
+        TF_WARN("Could not evaluate token-valued axis attribute on prim %s",
+            prim.GetPath().GetText());
+    }
+
+    const GfMatrix4d basis = UsdImagingGprimAdapter::GetImplicitBasis(axis);
+
+    const size_t numPoints =
+        GeomUtilCylinderMeshGenerator::ComputeNumPoints(numRadial);
+
+    VtVec3fArray points(numPoints);
+        
+    GeomUtilCylinderMeshGenerator::GeneratePoints(
+        points.begin(),
+        numRadial,
+        radius,
+        height,
+        &basis
+    );
+
+    return VtValue(points);
+}
+
+/*virtual*/
+VtValue
+UsdImagingCylinderAdapter_1::GetPoints(UsdPrim const& prim,
                                      UsdTimeCode time) const
 {
     UsdGeomCylinder_1 cylinder(prim);
@@ -222,22 +318,6 @@ UsdImagingCylinderAdapter::GetPoints(UsdPrim const& prim,
     return VtValue(points);
 }
 
-/*virtual*/ 
-VtValue
-UsdImagingCylinderAdapter::GetTopology(UsdPrim const& prim,
-                                       SdfPath const& cachePath,
-                                       UsdTimeCode time) const
-{
-    TRACE_FUNCTION();
-    HF_MALLOC_TAG_FUNCTION();
-    
-    // All cylinders share the same topology.
-    static const HdMeshTopology topology =
-        HdMeshTopology(GeomUtilCylinderMeshGenerator::GenerateTopology(
-                            numRadial));
-
-    return VtValue(topology);
-}
-
 PXR_NAMESPACE_CLOSE_SCOPE
+
 

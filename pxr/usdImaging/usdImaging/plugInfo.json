@@ -43,14 +43,21 @@
                         "isInternal": true,
                         "primTypeName": "Camera"
                     },
-                    "UsdImagingCapsuleAdapter": {
+                    "UsdImagingCapsuleAdapter_0": {
+                        "bases": [
+                            "UsdImagingGprimAdapter"
+                        ],
+                        "isInternal": true,
+                        "primTypeName": "Capsule"
+                    },
+                    "UsdImagingCapsuleAdapter_1": {
                         "bases": [
                             "UsdImagingGprimAdapter"
                         ],
                         "isInternal": true,
                         "primTypeName": "Capsule_1"
                     },
-                     "UsdImagingCollectionAPIAdapter" : {
+                      "UsdImagingCollectionAPIAdapter" : {
                         "bases": ["UsdImagingAPISchemaAdapter"],
                         "isInternal": true,
                         "apiSchemaName": "CollectionAPI"
@@ -81,7 +88,14 @@
                         "isInternal": true,
                         "primTypeName": "Cube"
                     },
-                    "UsdImagingCylinderAdapter": {
+                    "UsdImagingCylinderAdapter_0": {
+                        "bases": [
+                            "UsdImagingGprimAdapter"
+                        ],
+                        "isInternal": true,
+                        "primTypeName": "Cylinder"
+                    },
+                     "UsdImagingCylinderAdapter_1": {
                         "bases": [
                             "UsdImagingGprimAdapter"
                         ],

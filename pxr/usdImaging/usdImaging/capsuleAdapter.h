@@ -39,7 +39,8 @@ class UsdGeomCapsule;
 ///
 /// Delegate support for UsdGeomCapsule.
 ///
-class UsdImagingCapsuleAdapter : public UsdImagingGprimAdapter {
+template<typename PrimSource>
+class UsdImagingCapsuleAdapterBase : public UsdImagingGprimAdapter {
 public:
     typedef UsdImagingGprimAdapter BaseAdapter;
 
@@ -48,11 +49,11 @@ public:
     // Number of divisions along the spine axis for each hemispherical cap.
     static constexpr size_t numCapAxial = 4;
 
-    UsdImagingCapsuleAdapter()
+    UsdImagingCapsuleAdapterBase()
         : UsdImagingGprimAdapter()
     {}
     USDIMAGING_API
-    virtual ~UsdImagingCapsuleAdapter();
+    virtual ~UsdImagingCapsuleAdapterBase();
 
     // ---------------------------------------------------------------------- //
     /// \name Scene Index Support
@@ -116,16 +117,10 @@ public:
     VtValue GetTopology(UsdPrim const& prim,
                         SdfPath const& cachePath,
                         UsdTimeCode time) const override;
-
-    // Override the implemetation in GprimAdapter since we don't fetch the
-    // points attribute for implicit primitives.
-    USDIMAGING_API
-    VtValue GetPoints(
-        UsdPrim const& prim,
-        UsdTimeCode time) const override;
 };
 
 
 PXR_NAMESPACE_CLOSE_SCOPE
 
 #endif // PXR_USD_IMAGING_USD_IMAGING_CAPSULE_ADAPTER_H
+

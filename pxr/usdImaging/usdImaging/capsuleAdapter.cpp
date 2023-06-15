@@ -46,28 +46,58 @@
 PXR_NAMESPACE_OPEN_SCOPE
 
 namespace {
-using _PrimSource = UsdImagingDataSourceImplicitsPrim<UsdGeomCapsule_1, HdCapsuleSchema>;
+using _PrimSource0 = UsdImagingDataSourceImplicitsPrim<UsdGeomCapsule, HdCapsuleSchema>;
+using _PrimSource1 = UsdImagingDataSourceImplicitsPrim<UsdGeomCapsule_1, HdCapsuleSchema>;
 }
+
+
+class UsdImagingCapsuleAdapter_0 : public UsdImagingCapsuleAdapterBase<_PrimSource0> {
+public:
+
+    // Override the implemetation in GprimAdapter since we don't fetch the
+    // points attribute for implicit primitives.
+    USDIMAGING_API
+    VtValue GetPoints(
+        UsdPrim const& prim,
+        UsdTimeCode time) const override;
+};
+
+class UsdImagingCapsuleAdapter_1 : public UsdImagingCapsuleAdapterBase<_PrimSource1> {
+public:
+
+    // Override the implemetation in GprimAdapter since we don't fetch the
+    // points attribute for implicit primitives.
+    USDIMAGING_API
+    VtValue GetPoints(
+        UsdPrim const& prim,
+        UsdTimeCode time) const override;
+};
 
 TF_REGISTRY_FUNCTION(TfType)
 {
-    typedef UsdImagingCapsuleAdapter Adapter;
-    TfType t = TfType::Define<Adapter, TfType::Bases<Adapter::BaseAdapter> >();
-    t.SetFactory< UsdImagingPrimAdapterFactory<Adapter> >();
+    typedef UsdImagingCapsuleAdapter_0 Adapter_0;
+    TfType t0 = TfType::Define<Adapter_0, TfType::Bases<Adapter_0::BaseAdapter> >();
+    t0.SetFactory< UsdImagingPrimAdapterFactory<Adapter_0> >();
+    typedef UsdImagingCapsuleAdapter_1 Adapter_1;
+    TfType t1 = TfType::Define<Adapter_1, TfType::Bases<Adapter_1::BaseAdapter> >();
+    t1.SetFactory< UsdImagingPrimAdapterFactory<Adapter_1> >();
 }
 
-UsdImagingCapsuleAdapter::~UsdImagingCapsuleAdapter() 
+template <typename PrimSource>
+UsdImagingCapsuleAdapterBase<PrimSource>::~UsdImagingCapsuleAdapterBase() 
 {
 }
 
+template <typename PrimSource>
 TfTokenVector
-UsdImagingCapsuleAdapter::GetImagingSubprims(UsdPrim const& prim)
+UsdImagingCapsuleAdapterBase<PrimSource>::GetImagingSubprims(UsdPrim const& prim)
 {
     return { TfToken() };
 }
 
+template <typename PrimSource>
 TfToken
-UsdImagingCapsuleAdapter::GetImagingSubprimType(
+UsdImagingCapsuleAdapterBase<PrimSource>::GetImagingSubprimType(
         UsdPrim const& prim,
         TfToken const& subprim)
 {
@@ -77,14 +107,15 @@ UsdImagingCapsuleAdapter::GetImagingSubprimType(
     return TfToken();
 }
 
+template <typename PrimSource>
 HdContainerDataSourceHandle
-UsdImagingCapsuleAdapter::GetImagingSubprimData(
+UsdImagingCapsuleAdapterBase<PrimSource>::GetImagingSubprimData(
         UsdPrim const& prim,
         TfToken const& subprim,
         const UsdImagingDataSourceStageGlobals &stageGlobals)
 {
     if (subprim.IsEmpty()) {
-        return _PrimSource::New(
+        return PrimSource::New(
             prim.GetPath(),
             prim,
             stageGlobals);
@@ -92,27 +123,30 @@ UsdImagingCapsuleAdapter::GetImagingSubprimData(
     return nullptr;
 }
 
+template <typename PrimSource>
 HdDataSourceLocatorSet
-UsdImagingCapsuleAdapter::InvalidateImagingSubprim(
+UsdImagingCapsuleAdapterBase<PrimSource>::InvalidateImagingSubprim(
         UsdPrim const& prim,
         TfToken const& subprim,
         TfTokenVector const& properties)
 {
     if (subprim.IsEmpty()) {
-        return _PrimSource::Invalidate(prim, subprim, properties);
+        return PrimSource::Invalidate(prim, subprim, properties);
     }
     
     return HdDataSourceLocatorSet();
 }
 
+template <typename PrimSource>
 bool
-UsdImagingCapsuleAdapter::IsSupported(UsdImagingIndexProxy const* index) const
+UsdImagingCapsuleAdapterBase<PrimSource>::IsSupported(UsdImagingIndexProxy const* index) const
 {
     return index->IsRprimTypeSupported(HdPrimTypeTokens->mesh);
 }
 
+template <typename PrimSource>
 SdfPath
-UsdImagingCapsuleAdapter::Populate(UsdPrim const& prim, 
+UsdImagingCapsuleAdapterBase<PrimSource>::Populate(UsdPrim const& prim, 
                             UsdImagingIndexProxy* index,
                             UsdImagingInstancerContext const* instancerContext)
 
@@ -121,8 +155,9 @@ UsdImagingCapsuleAdapter::Populate(UsdPrim const& prim,
                      prim, index, GetMaterialUsdPath(prim), instancerContext);
 }
 
+template <typename PrimSource>
 void 
-UsdImagingCapsuleAdapter::TrackVariability(UsdPrim const& prim,
+UsdImagingCapsuleAdapterBase<PrimSource>::TrackVariability(UsdPrim const& prim,
                                           SdfPath const& cachePath,
                                           HdDirtyBits* timeVaryingBits,
                                           UsdImagingInstancerContext const* 
@@ -153,8 +188,9 @@ UsdImagingCapsuleAdapter::TrackVariability(UsdPrim const& prim,
     }
 }
 
+template <typename PrimSource>
 HdDirtyBits
-UsdImagingCapsuleAdapter::ProcessPropertyChange(UsdPrim const& prim,
+UsdImagingCapsuleAdapterBase<PrimSource>::ProcessPropertyChange(UsdPrim const& prim,
                                                 SdfPath const& cachePath,
                                                 TfToken const& propertyName)
 {
@@ -168,9 +204,66 @@ UsdImagingCapsuleAdapter::ProcessPropertyChange(UsdPrim const& prim,
     return BaseAdapter::ProcessPropertyChange(prim, cachePath, propertyName);
 }
 
+/*virtual*/ 
+template <typename PrimSource>
+VtValue
+UsdImagingCapsuleAdapterBase<PrimSource>::GetTopology(UsdPrim const& prim,
+                                      SdfPath const& cachePath,
+                                      UsdTimeCode time) const
+{
+    TRACE_FUNCTION();
+    HF_MALLOC_TAG_FUNCTION();
+
+    // All capsules share the same topology.
+    static const HdMeshTopology topology =
+        HdMeshTopology(GeomUtilCapsuleMeshGenerator::GenerateTopology(
+                            numRadial, numCapAxial));
+
+    return VtValue(topology);
+}
+
 /*virtual*/
 VtValue
-UsdImagingCapsuleAdapter::GetPoints(UsdPrim const& prim,
+UsdImagingCapsuleAdapter_0::GetPoints(UsdPrim const& prim,
+                                    UsdTimeCode time) const
+{
+    TRACE_FUNCTION();
+    HF_MALLOC_TAG_FUNCTION();
+
+    UsdGeomCapsule capsule(prim);
+    double height = 1.0;
+    double radius = 0.5;
+    TfToken axis = UsdGeomTokens->z;
+    TF_VERIFY(capsule.GetHeightAttr().Get(&height, time));
+    TF_VERIFY(capsule.GetRadiusAttr().Get(&radius, time));
+    TF_VERIFY(capsule.GetAxisAttr().Get(&axis, time));
+
+    // The capsule point generator computes points such that the "rings" of the
+    // capsule lie on a plane parallel to the XY plane, with the Z-axis being
+    // the "spine" of the capsule. These need to be transformed to the right
+    // basis when a different spine axis is used.
+    const GfMatrix4d basis = UsdImagingGprimAdapter::GetImplicitBasis(axis);
+
+    const size_t numPoints =
+        GeomUtilCapsuleMeshGenerator::ComputeNumPoints(numRadial, numCapAxial);
+
+    VtVec3fArray points(numPoints);
+        
+    GeomUtilCapsuleMeshGenerator::GeneratePoints(
+        points.begin(),
+        numRadial,
+        numCapAxial,
+        radius,
+        height,
+        &basis
+    );
+
+    return VtValue(points);
+}
+
+/*virtual*/
+VtValue
+UsdImagingCapsuleAdapter_1::GetPoints(UsdPrim const& prim,
                                     UsdTimeCode time) const
 {
     TRACE_FUNCTION();
@@ -244,22 +337,7 @@ UsdImagingCapsuleAdapter::GetPoints(UsdPrim const& prim,
     return VtValue(points);
 }
 
-/*virtual*/ 
-VtValue
-UsdImagingCapsuleAdapter::GetTopology(UsdPrim const& prim,
-                                      SdfPath const& cachePath,
-                                      UsdTimeCode time) const
-{
-    TRACE_FUNCTION();
-    HF_MALLOC_TAG_FUNCTION();
 
-    // All capsules share the same topology.
-    static const HdMeshTopology topology =
-        HdMeshTopology(GeomUtilCapsuleMeshGenerator::GenerateTopology(
-                            numRadial, numCapAxial));
-
-    return VtValue(topology);
-}
 
 PXR_NAMESPACE_CLOSE_SCOPE
 

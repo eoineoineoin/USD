@@ -35,22 +35,23 @@ PXR_NAMESPACE_OPEN_SCOPE
 
 class UsdGeomCylinder;
 
-/// \class UsdImagingCylinderAdapter
+/// \class UsdImagingCylinderAdapterBase
 ///
-/// Delegate support for UsdGeomCylinder.
+/// Base class for UsdGeomCylinder delegates.
 ///
-class UsdImagingCylinderAdapter : public UsdImagingGprimAdapter {
+template <typename PrimType>
+class UsdImagingCylinderAdapterBase : public UsdImagingGprimAdapter {
 public:
     typedef UsdImagingGprimAdapter BaseAdapter;
 
     // Number of radial segments on a circular cross-section of the cylinder.
     static constexpr size_t numRadial = 10;
 
-    UsdImagingCylinderAdapter()
+    UsdImagingCylinderAdapterBase()
         : UsdImagingGprimAdapter()
     {}
     USDIMAGING_API
-    virtual ~UsdImagingCylinderAdapter();
+    virtual ~UsdImagingCylinderAdapterBase();
 
     // ---------------------------------------------------------------------- //
     /// \name Scene Index Support
@@ -115,15 +116,7 @@ public:
     VtValue GetTopology(UsdPrim const& prim,
                         SdfPath const& cachePath,
                         UsdTimeCode time) const override;
-
-    // Override the implemetation in GprimAdapter since we don't fetch the
-    // points attribute for implicit primitives.
-    USDIMAGING_API
-    VtValue GetPoints(
-        UsdPrim const& prim,
-        UsdTimeCode time) const override;
 };
-
 
 PXR_NAMESPACE_CLOSE_SCOPE
 
