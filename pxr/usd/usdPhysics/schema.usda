@@ -728,7 +728,10 @@ class "PhysicsLimitAPI"
     "transZ", "rotX", "rotY", "rotZ", "distance". Setting these as a 
     multipleApply schema TfToken name will define the degree of freedom the
     PhysicsLimitAPI is applied to. Note that if the low limit is higher than 
-    the high limit, motion along this axis is considered locked."""
+    the high limit, motion along this axis is considered locked. An axis which
+    is not locked may be configured to have soft limits by specifying a finite
+    "stiffness" in which case, the limit behaves as a damped spring, where the
+    restorative force = -stiffness * limitExcess - damping * velocity"""
 
     inherits = </APISchemaBase>
 
@@ -750,6 +753,24 @@ class "PhysicsLimitAPI"
         displayName = "High Limit"
         doc = """Upper limit. Units: degrees or distance depending on trans or 
         rot axis applied to. inf means not limited in positive direction."""
+    )
+
+    float physics:stiffness = inf (
+        customData = {
+            string apiName = "stiffness"
+        }
+        doc = """Stiffness of the limit outside the [low,high] range. Units:
+        If linear drive: mass/second/second
+        If angular drive: mass*DIST_UNITS*DIST_UNITS/degree/second/second."""
+    )
+
+    float physics:damping = 0.0 (
+        customData = {
+            string apiName = "damping"
+        }
+        doc = """Damping of the limit outside of the [low,high] range. Units:
+        If linear limit: mass/second
+        If angular limit: mass*DIST_UNITS*DIST_UNITS/second/second/degrees."""
     )
 }
 
