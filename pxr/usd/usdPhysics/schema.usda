@@ -580,7 +580,7 @@ class PhysicsRevoluteJoint "PhysicsRevoluteJoint"
     customData = {
         string className = "RevoluteJoint"
     }
-    doc = """Predefined revolute joint type (rotation along revolute joint
+    doc = """Predefined revolute joint type (rotation about revolute joint
     axis is permitted.)"""
 
     inherits = </PhysicsJoint>
@@ -611,6 +611,24 @@ class PhysicsRevoluteJoint "PhysicsRevoluteJoint"
         displayName = "Upper Limit"
         doc = """Upper limit. Units: degrees. inf means not limited in 
         positive direction."""
+    )
+
+    float physics:stiffness = inf (
+        customData = {
+            string apiName = "stiffness"
+        }
+        doc = """Stiffness of the limit applied around the revolute joint axis
+        when extending outside of the [lowerLimit,upperLimit] range. Units:
+        mass*DIST_UNITS*DIST_UNITS/degrees/second/second."""
+    )
+
+    float physics:damping = 0.0 (
+        customData = {
+            string apiName = "damping"
+        }
+        doc = """Damping of the limit applied around the revolute joint axis
+        when extending outside of the [lowerLimit,upperLimit] range. Units:
+        mass*DIST_UNITS*DIST_UNITS/second/second/degrees."""
     )
 }
 
@@ -651,6 +669,25 @@ class PhysicsPrismaticJoint "PhysicsPrismaticJoint"
         doc = """Upper limit. Units: distance. inf means not limited in 
         positive direction."""
     )
+
+    float physics:stiffness = inf (
+        customData = {
+            string apiName = "stiffness"
+        }
+        doc = """Stiffness of the limit along the joint axis when outside the
+        [lowerLimit, upperLimit] range. Units: mass/second/second"""
+    )
+
+    !!!TODO.EOIN Not happy with this description
+
+    float physics:damping = 0.0 (
+        customData = {
+            string apiName = "damping"
+        }
+        doc = """Damping of the limit along the joint axis when outside the
+        [lowerLimit, upperLimit] range. Units: mass/second"""
+    )
+
 }
 
 class PhysicsSphericalJoint "PhysicsSphericalJoint"
@@ -694,6 +731,22 @@ class PhysicsSphericalJoint "PhysicsSphericalJoint"
         toward the second to next axis. A negative value means not limited. 
         Units: degrees."""
     )
+
+    float physics:stiffness = inf (
+        customData = {
+            string apiName = "stiffness"
+        }
+        doc = """Stiffness of the cone limit when extending outside of the given
+        range.  Units: mass*DIST_UNITS*DIST_UNITS/degrees/second/second."""
+    )
+
+    float physics:damping = 0.0 (
+        customData = {
+            string apiName = "damping"
+        }
+        doc = """Damping of the cone limit when extending outside of the given
+        range. Units: mass*DIST_UNITS*DIST_UNITS/second/second/degrees."""
+    )
 }
 
 
@@ -725,6 +778,22 @@ class PhysicsDistanceJoint "PhysicsDistanceJoint"
         doc = """Maximum distance. If attribute is negative, the joint is not 
         limited. Units: distance."""
     )
+
+    float physics:stiffness = inf (
+        customData = {
+            string apiName = "stiffness"
+        }
+        doc = """Stiffness of the joint outside the [minDistance,maxDistance]
+        range. Units: mass/second/second"""
+    )
+
+    float physics:damping = 0.0 (
+        customData = {
+            string apiName = "damping"
+        }
+        doc = """Damping of the joint outside of the [minDistance,maxDistance]
+        range. Units: mass/second"""
+    )
 }
 
 class PhysicsFixedJoint "PhysicsFixedJoint"
@@ -753,7 +822,10 @@ class "PhysicsLimitAPI"
     "transZ", "rotX", "rotY", "rotZ", "distance". Setting these as a 
     multipleApply schema TfToken name will define the degree of freedom the
     PhysicsLimitAPI is applied to. Note that if the low limit is higher than 
-    the high limit, motion along this axis is considered locked."""
+    the high limit, motion along this axis is considered locked. An axis which
+    is not locked may be configured to have soft limits by specifying a finite
+    "stiffness" in which case the limit behaves as a damped spring, where the
+    restorative force = -stiffness * limitExcess - damping * velocity"""
 
     inherits = </APISchemaBase>
 
@@ -775,6 +847,24 @@ class "PhysicsLimitAPI"
         displayName = "High Limit"
         doc = """Upper limit. Units: degrees or distance depending on trans or 
         rot axis applied to. inf means not limited in positive direction."""
+    )
+
+    float physics:stiffness = inf (
+        customData = {
+            string apiName = "stiffness"
+        }
+        doc = """Stiffness of the limit outside the [low,high] range. Units:
+        If linear limit: mass/second/second
+        If angular limit: mass*DIST_UNITS*DIST_UNITS/degree/second/second."""
+    )
+
+    float physics:damping = 0.0 (
+        customData = {
+            string apiName = "damping"
+        }
+        doc = """Damping of the limit outside of the [low,high] range. Units:
+        If linear limit: mass/second
+        If angular limit: mass*DIST_UNITS*DIST_UNITS/second/second/degrees."""
     )
 }
 

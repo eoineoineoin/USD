@@ -559,6 +559,27 @@ that collisions between the two subtrees indicated by the two body rel-s are
 ignored. This default filtering behavior can be opted out of using the joint's 
 collisionEnabled attribute. No filtering occurs if either rel is undefined.
 
+\subsubsection usdPhysics_joint_limit_forces Behavior at joint limits
+
+By default, a joint will constrain the movement of the bodies such that the
+difference between the joint frames does not exceed the limits described by the
+joint. The PhysicsLimitAPI, as well as many of the pre-defined joint types have
+an additional stiffness and damping parameters affecting the behavior at the
+limit. By providing a finite value for stiffness, the behavior of the joint when
+exceeding the limit should allow for some violation of the described limit and
+should behave as a damped spring:
+
+\code
+    restorative force = -stiffness * limitExcess - damping * velocity"""
+\endcode
+
+Note, however, that many of the predefined joint types contain implicit locked
+degrees of freedom. This compliance should only affect the joint stiffness in
+the direction described by the particular joint's upper/lower limits - e.g., a
+finite stiffness on a PhysicsRevoluteJoint should only affect the rotation about
+the revolute axis and should not affect the three locked linear axes, nor the
+two locked angular axes.
+
 \subsubsection usdPhysics_breaking_disabling_joints Breaking and Disabling Joints
 
 Breaking force is a practical property useful for all joints; joints can break
