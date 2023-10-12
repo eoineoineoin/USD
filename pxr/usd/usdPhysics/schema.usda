@@ -618,8 +618,8 @@ class PhysicsRevoluteJoint "PhysicsRevoluteJoint"
             string apiName = "stiffness"
         }
         doc = """Stiffness of the limit applied around the revolute joint axis
-        when extending outside of the [lowerLimit,upperLimit] range. Units:
-        mass*DIST_UNITS*DIST_UNITS/degrees/second/second."""
+        when extending outside of the configured range.
+        Units: mass*DIST_UNITS*DIST_UNITS/degrees/second/second."""
     )
 
     float physics:damping = 0.0 (
@@ -627,8 +627,8 @@ class PhysicsRevoluteJoint "PhysicsRevoluteJoint"
             string apiName = "damping"
         }
         doc = """Damping of the limit applied around the revolute joint axis
-        when extending outside of the [lowerLimit,upperLimit] range. Units:
-        mass*DIST_UNITS*DIST_UNITS/second/second/degrees."""
+        when extending outside of the configured range.
+        Units: mass*DIST_UNITS*DIST_UNITS/second/degrees."""
     )
 }
 
@@ -674,18 +674,16 @@ class PhysicsPrismaticJoint "PhysicsPrismaticJoint"
         customData = {
             string apiName = "stiffness"
         }
-        doc = """Stiffness of the limit along the joint axis when outside the
-        [lowerLimit, upperLimit] range. Units: mass/second/second"""
+        doc = """Stiffness of the limit along the direction of the joint axis
+        when outside the configured range. Units: mass/second/second"""
     )
-
-    !!!TODO.EOIN Not happy with this description
 
     float physics:damping = 0.0 (
         customData = {
             string apiName = "damping"
         }
-        doc = """Damping of the limit along the joint axis when outside the
-        [lowerLimit, upperLimit] range. Units: mass/second"""
+        doc = """Damping of the limit along the direction of the joint axis
+        when outside the configured range. Units: mass/second"""
     )
 
 }
@@ -783,16 +781,16 @@ class PhysicsDistanceJoint "PhysicsDistanceJoint"
         customData = {
             string apiName = "stiffness"
         }
-        doc = """Stiffness of the joint outside the [minDistance,maxDistance]
-        range. Units: mass/second/second"""
+        doc = """Stiffness of the joint outside the configured range.
+        Units: mass/second/second"""
     )
 
     float physics:damping = 0.0 (
         customData = {
             string apiName = "damping"
         }
-        doc = """Damping of the joint outside of the [minDistance,maxDistance]
-        range. Units: mass/second"""
+        doc = """Damping of the joint outside of the configured range.
+        Units: mass/second"""
     )
 }
 
@@ -853,7 +851,7 @@ class "PhysicsLimitAPI"
         customData = {
             string apiName = "stiffness"
         }
-        doc = """Stiffness of the limit outside the [low,high] range. Units:
+        doc = """Stiffness of the limit outside the configured range. Units:
         If linear limit: mass/second/second
         If angular limit: mass*DIST_UNITS*DIST_UNITS/degree/second/second."""
     )
@@ -862,7 +860,7 @@ class "PhysicsLimitAPI"
         customData = {
             string apiName = "damping"
         }
-        doc = """Damping of the limit outside of the [low,high] range. Units:
+        doc = """Damping of the limit outside of the configured range. Units:
         If linear limit: mass/second
         If angular limit: mass*DIST_UNITS*DIST_UNITS/second/second/degrees."""
     )
